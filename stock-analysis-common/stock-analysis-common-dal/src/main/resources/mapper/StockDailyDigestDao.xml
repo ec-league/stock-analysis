@@ -25,13 +25,13 @@
     TRADING_VOLUME, BUSINESS_VOLUME, TURNOVER_RATE, PE, PB, TOTAL_VALUE, CIRCULATION_MARKET_VALUE, 
     GMT_CREATE, GMT_MODIFIED
     </sql>
-    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from STOCK_DAILY_DIGEST
         where ID = #{id,jdbcType=BIGINT}
     </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <delete id="deleteById" parameterType="java.lang.Long">
         delete
         from STOCK_DAILY_DIGEST
         where ID = #{id,jdbcType=BIGINT}
@@ -50,168 +50,9 @@
                 #{businessVolume,jdbcType=DECIMAL},
                 #{turnoverRate,jdbcType=DOUBLE}, #{pe,jdbcType=DOUBLE}, #{pb,jdbcType=DOUBLE},
                 #{totalValue,jdbcType=DECIMAL}, #{circulationMarketValue,jdbcType=DECIMAL},
-                #{gmtCreate,jdbcType=TIMESTAMP},
-                #{gmtModified,jdbcType=TIMESTAMP})
+                CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     </insert>
-    <insert id="insertSelective" keyColumn="ID" keyProperty="id"
-            parameterType="com.sapphire.stock.analysis.common.dal.model.StockDailyDigestDO" useGeneratedKeys="true">
-        insert into STOCK_DAILY_DIGEST
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="code != null">
-                CODE,
-            </if>
-            <if test="name != null">
-                `NAME`,
-            </if>
-            <if test="startPrice != null">
-                START_PRICE,
-            </if>
-            <if test="endPrice != null">
-                END_PRICE,
-            </if>
-            <if test="highestPrice != null">
-                HIGHEST_PRICE,
-            </if>
-            <if test="lowestPrice != null">
-                LOWEST_PRICE,
-            </if>
-            <if test="partitionDate != null">
-                PARTITION_DATE,
-            </if>
-            <if test="tradingVolume != null">
-                TRADING_VOLUME,
-            </if>
-            <if test="businessVolume != null">
-                BUSINESS_VOLUME,
-            </if>
-            <if test="turnoverRate != null">
-                TURNOVER_RATE,
-            </if>
-            <if test="pe != null">
-                PE,
-            </if>
-            <if test="pb != null">
-                PB,
-            </if>
-            <if test="totalValue != null">
-                TOTAL_VALUE,
-            </if>
-            <if test="circulationMarketValue != null">
-                CIRCULATION_MARKET_VALUE,
-            </if>
-            <if test="gmtCreate != null">
-                GMT_CREATE,
-            </if>
-            <if test="gmtModified != null">
-                GMT_MODIFIED,
-            </if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="code != null">
-                #{code,jdbcType=VARCHAR},
-            </if>
-            <if test="name != null">
-                #{name,jdbcType=VARCHAR},
-            </if>
-            <if test="startPrice != null">
-                #{startPrice,jdbcType=DECIMAL},
-            </if>
-            <if test="endPrice != null">
-                #{endPrice,jdbcType=DECIMAL},
-            </if>
-            <if test="highestPrice != null">
-                #{highestPrice,jdbcType=DECIMAL},
-            </if>
-            <if test="lowestPrice != null">
-                #{lowestPrice,jdbcType=DECIMAL},
-            </if>
-            <if test="partitionDate != null">
-                #{partitionDate,jdbcType=VARCHAR},
-            </if>
-            <if test="tradingVolume != null">
-                #{tradingVolume,jdbcType=DECIMAL},
-            </if>
-            <if test="businessVolume != null">
-                #{businessVolume,jdbcType=DECIMAL},
-            </if>
-            <if test="turnoverRate != null">
-                #{turnoverRate,jdbcType=DOUBLE},
-            </if>
-            <if test="pe != null">
-                #{pe,jdbcType=DOUBLE},
-            </if>
-            <if test="pb != null">
-                #{pb,jdbcType=DOUBLE},
-            </if>
-            <if test="totalValue != null">
-                #{totalValue,jdbcType=DECIMAL},
-            </if>
-            <if test="circulationMarketValue != null">
-                #{circulationMarketValue,jdbcType=DECIMAL},
-            </if>
-            <if test="gmtCreate != null">
-                #{gmtCreate,jdbcType=TIMESTAMP},
-            </if>
-            <if test="gmtModified != null">
-                #{gmtModified,jdbcType=TIMESTAMP},
-            </if>
-        </trim>
-    </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.sapphire.stock.analysis.common.dal.model.StockDailyDigestDO">
-        update STOCK_DAILY_DIGEST
-        <set>
-            <if test="code != null">
-                CODE = #{code,jdbcType=VARCHAR},
-            </if>
-            <if test="name != null">
-                `NAME` = #{name,jdbcType=VARCHAR},
-            </if>
-            <if test="startPrice != null">
-                START_PRICE = #{startPrice,jdbcType=DECIMAL},
-            </if>
-            <if test="endPrice != null">
-                END_PRICE = #{endPrice,jdbcType=DECIMAL},
-            </if>
-            <if test="highestPrice != null">
-                HIGHEST_PRICE = #{highestPrice,jdbcType=DECIMAL},
-            </if>
-            <if test="lowestPrice != null">
-                LOWEST_PRICE = #{lowestPrice,jdbcType=DECIMAL},
-            </if>
-            <if test="partitionDate != null">
-                PARTITION_DATE = #{partitionDate,jdbcType=VARCHAR},
-            </if>
-            <if test="tradingVolume != null">
-                TRADING_VOLUME = #{tradingVolume,jdbcType=DECIMAL},
-            </if>
-            <if test="businessVolume != null">
-                BUSINESS_VOLUME = #{businessVolume,jdbcType=DECIMAL},
-            </if>
-            <if test="turnoverRate != null">
-                TURNOVER_RATE = #{turnoverRate,jdbcType=DOUBLE},
-            </if>
-            <if test="pe != null">
-                PE = #{pe,jdbcType=DOUBLE},
-            </if>
-            <if test="pb != null">
-                PB = #{pb,jdbcType=DOUBLE},
-            </if>
-            <if test="totalValue != null">
-                TOTAL_VALUE = #{totalValue,jdbcType=DECIMAL},
-            </if>
-            <if test="circulationMarketValue != null">
-                CIRCULATION_MARKET_VALUE = #{circulationMarketValue,jdbcType=DECIMAL},
-            </if>
-            <if test="gmtCreate != null">
-                GMT_CREATE = #{gmtCreate,jdbcType=TIMESTAMP},
-            </if>
-            <if test="gmtModified != null">
-                GMT_MODIFIED = #{gmtModified,jdbcType=TIMESTAMP},
-            </if>
-        </set>
-        where ID = #{id,jdbcType=BIGINT}
-    </update>
-    <update id="updateByPrimaryKey" parameterType="com.sapphire.stock.analysis.common.dal.model.StockDailyDigestDO">
+    <update id="updateById" parameterType="com.sapphire.stock.analysis.common.dal.model.StockDailyDigestDO">
         update STOCK_DAILY_DIGEST
         set CODE                     = #{code,jdbcType=VARCHAR},
             `NAME`                   = #{name,jdbcType=VARCHAR},
@@ -227,8 +68,7 @@
             PB                       = #{pb,jdbcType=DOUBLE},
             TOTAL_VALUE              = #{totalValue,jdbcType=DECIMAL},
             CIRCULATION_MARKET_VALUE = #{circulationMarketValue,jdbcType=DECIMAL},
-            GMT_CREATE               = #{gmtCreate,jdbcType=TIMESTAMP},
-            GMT_MODIFIED             = #{gmtModified,jdbcType=TIMESTAMP}
+            GMT_MODIFIED             = CURRENT_TIMESTAMP
         where ID = #{id,jdbcType=BIGINT}
     </update>
 </mapper>

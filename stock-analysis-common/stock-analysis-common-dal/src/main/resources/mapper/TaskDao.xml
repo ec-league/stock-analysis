@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sapphire.stock.analysis.common.dal.dao.TaskDao">
+    <resultMap id="BaseResultMap" type="com.sapphire.stock.analysis.common.dal.model.TaskDo">
+        <id column="ID" jdbcType="BIGINT" property="id"/>
+        <result column="TASK_TYPE" jdbcType="VARCHAR" property="taskType"/>
+        <result column="EXT_INFO" jdbcType="VARCHAR" property="extInfo"/>
+        <result column="STATUS" jdbcType="VARCHAR" property="status"/>
+        <result column="RESULT_MSG" jdbcType="VARCHAR" property="resultMsg"/>
+        <result column="RETRY_TIMES" jdbcType="INTEGER" property="retryTimes"/>
+        <result column="FIRE_DATE" jdbcType="TIMESTAMP" property="fireDate"/>
+        <result column="GMT_CREATE" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="GMT_MODIFIED" jdbcType="TIMESTAMP" property="gmtModified"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        ID, TASK_TYPE, EXT_INFO, `STATUS`, RESULT_MSG, RETRY_TIMES, FIRE_DATE, GMT_CREATE,
+    GMT_MODIFIED
+    </sql>
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from TASK
+        where ID = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="selectFireTasks" resultMap="BaseResultMap">
+        SELECT *
+        FROM TASK
+        WHERE STATUS in ('INIT', 'RETRY')
+          AND FIRE_DATE > CURRENT_TIMESTAMP
+        ORDER BY FIRE_DATE
+        LIMIT 100;
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from TASK
+        where ID = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" keyColumn="ID" keyProperty="id"
+            parameterType="com.sapphire.stock.analysis.common.dal.model.TaskDo" useGeneratedKeys="true">
+        insert into TASK (TASK_TYPE, EXT_INFO, `STATUS`,
+                          RESULT_MSG, RETRY_TIMES, FIRE_DATE,
+                          GMT_CREATE, GMT_MODIFIED)
+        values (#{taskType,jdbcType=VARCHAR}, #{extInfo,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR},
+                #{resultMsg,jdbcType=VARCHAR}, #{retryTimes,jdbcType=INTEGER}, #{fireDate,jdbcType=TIMESTAMP},
+                CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    </insert>
+
+    <update id="updateById" parameterType="com.sapphire.stock.analysis.common.dal.model.TaskDo">
+        update TASK
+        set TASK_TYPE    = #{taskType,jdbcType=VARCHAR},
+            EXT_INFO     = #{extInfo,jdbcType=VARCHAR},
+            `STATUS`     = #{status,jdbcType=VARCHAR},
+            RESULT_MSG   = #{resultMsg,jdbcType=VARCHAR},
+            RETRY_TIMES  = #{retryTimes,jdbcType=INTEGER},
+            FIRE_DATE    = #{fireDate,jdbcType=TIMESTAMP},
+            GMT_MODIFIED = CURRENT_TIMESTAMP
+        where ID = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>

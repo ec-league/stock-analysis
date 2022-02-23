@@ -3,15 +3,11 @@ package com.sapphire.stock.analysis.common.dal.dao;
 import com.sapphire.stock.analysis.common.dal.model.StockDailyDigestDO;
 
 public interface StockDailyDigestDao {
-    int deleteByPrimaryKey(Long id);
+    int deleteById(Long id);
 
     int insert(StockDailyDigestDO record);
 
-    int insertSelective(StockDailyDigestDO record);
+    StockDailyDigestDO selectById(Long id);
 
-    StockDailyDigestDO selectByPrimaryKey(Long id);
-
-    int updateByPrimaryKeySelective(StockDailyDigestDO record);
-
-    int updateByPrimaryKey(StockDailyDigestDO record);
+    int updateById(StockDailyDigestDO record);
 }

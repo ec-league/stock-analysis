@@ -15,5 +15,11 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.sapphire.stock</groupId>
+            <artifactId>stock-analysis-common-dal</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>
