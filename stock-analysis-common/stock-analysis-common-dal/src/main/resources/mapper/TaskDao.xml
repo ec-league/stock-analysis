@@ -22,15 +22,16 @@
         from TASK
         where ID = #{id,jdbcType=BIGINT}
     </select>
-    <select id="selectFireTasks" resultMap="BaseResultMap">
-        SELECT *
+    <select id="selectFireTasks" resultType="java.lang.Long">
+        SELECT ID
         FROM TASK
-        WHERE STATUS in ('INIT', 'RETRY')
+        WHERE TASK_TYPE = #{taskType}
+          AND STATUS in ('INIT', 'RETRY')
           AND FIRE_DATE > CURRENT_TIMESTAMP
         ORDER BY FIRE_DATE
-        LIMIT 100;
+        LIMIT ${limit};
     </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <delete id="deleteById" parameterType="java.lang.Long">
         delete
         from TASK
         where ID = #{id,jdbcType=BIGINT}
@@ -55,5 +56,11 @@
             FIRE_DATE    = #{fireDate,jdbcType=TIMESTAMP},
             GMT_MODIFIED = CURRENT_TIMESTAMP
         where ID = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="reStartProcessingTask" >
+        UPDATE TASK
+        SET STATUS='RETRY'
+        WHERE STATUS = 'PROCESSING'
     </update>
 </mapper>

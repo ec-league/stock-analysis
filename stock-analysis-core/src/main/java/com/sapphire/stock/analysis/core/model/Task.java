@@ -1,6 +1,7 @@
 package com.sapphire.stock.analysis.core.model;
 
 import java.util.Date;
+import java.util.Map;
 
 import lombok.Data;
 
@@ -10,21 +11,21 @@ import lombok.Data;
  */
 @Data
 public class Task {
-    private long   id;
+    private long                id;
 
-    private String taskType;
+    private String              taskType;
 
-    private String extInfo;
+    private Map<String, String> extInfo;
 
-    private String status;
+    private String              status;
 
-    private String resultMsg;
+    private String              resultMsg;
 
-    private int    retryTimes;
+    private int                 retryTimes;
 
-    private Date   fireDate;
+    private Date                fireDate;
 
-    private Date   gmtCreate;
+    private Date                gmtCreate;
 
-    private Date   gmtModified;
+    private Date                gmtModified;
 }

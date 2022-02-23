@@ -2,6 +2,7 @@ package com.sapphire.stock.analysis.common.dal;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
 
 /**
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.ImportResource;
  */
 @Configuration
 @ImportResource("classpath:/dao-config.xml")
+@Import(StockAnalysisDataSource.class)
 @SpringBootApplication
 public class DalSpringConfig {
 

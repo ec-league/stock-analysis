@@ -16,17 +16,19 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.support.CronSequenceGenerator;
 import org.springframework.scheduling.support.CronTrigger;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.sapphire.stock.analysis.common.dal.dao.SchedulerConfigDao;
 import com.sapphire.stock.analysis.common.dal.model.SchedulerConfigDO;
-import com.sapphire.stock.analysis.core.ConfigCache;
+import com.sapphire.stock.analysis.core.cache.ConfigCache;
 import com.sapphire.stock.analysis.core.repo.TaskRepository;
 
 /**
  * Author: 柏云鹏
  * Date: 2022/2/23.
  */
+@Service
 public class TaskLoader {
     private static final Logger             logger             = LoggerFactory
         .getLogger("TASK-DIGEST");
@@ -98,7 +100,7 @@ public class TaskLoader {
         registerCronTrigger();
     }
 
-    public void loadTasks(final String taskType, final long singleNum) {
+    public void loadTasks(final String taskType, final int singleNum) {
         try {
             List<Long> taskIdList = taskRepository.selectFireTasks(taskType, singleNum);
             if (CollectionUtils.isEmpty(taskIdList)) {
@@ -133,7 +135,7 @@ public class TaskLoader {
 
     public void registerScheduler(SchedulerConfigDO schedulerConfig) {
         final String taskType = schedulerConfig.getTaskType();
-        final long singleNum = schedulerConfig.getLimit();
+        final int singleNum = schedulerConfig.getLimit();
 
         ScheduledFuture<?> scheduledFuture = taskScheduler.schedule(new Runnable() {
             @Override

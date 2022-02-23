@@ -40,3 +40,19 @@ create table if not exists stock_analysis.TASK
     engine innodb
     charset = utf8mb4;
 
+CREATE TABLE IF NOT EXISTS stock_analysis.SCHEDULER_CONFIG
+(
+    ID              BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '',
+    TASK_TYPE       VARCHAR(32) COMMENT '',
+    CRON_EXPRESSION VARCHAR(32) COMMENT '',
+    RECORD_LIMIT    INT COMMENT '',
+    STATUS          VARCHAR(8) COMMENT '',
+    GMT_CREATE      DATETIME COMMENT '',
+    GMT_MODIFIED    DATETIME COMMENT '',
+    UNIQUE INDEX uniq_task_type (TASK_TYPE)
+)
+    ENGINE = innodb
+    DEFAULT CHARSET = utf8mb4
+    COMMENT '调度配置';
+
+

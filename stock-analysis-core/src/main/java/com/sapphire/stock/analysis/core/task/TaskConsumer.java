@@ -5,7 +5,6 @@ import java.util.Date;
 import com.sapphire.stock.analysis.core.constant.TaskStatus;
 import com.sapphire.stock.analysis.core.model.Task;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,8 +40,7 @@ public class TaskConsumer {
             }
 
             task.setStatus(TaskStatus.PROCESSING.name());
-            task.setGmtModified(new Date());
-            boolean success = taskRepository.updateProcessing(task);
+            boolean success = taskRepository.save(task);
 
             if (!success) {
                 log.info("Update task status fail,taskId={}", taskId);
@@ -61,7 +59,7 @@ public class TaskConsumer {
                 e);
             task.setStatus(TaskStatus.FAIL.name());
             task.setResultMsg(e.getMessage());
-            taskRepository.updateTask(task);
+            taskRepository.save(task);
         } finally {
             log.info("CONSUME-DIGEST taskId={}, taskType={}, taskStatus={}", taskId,
                 task.getTaskType(), task.getStatus());

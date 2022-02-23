@@ -8,4 +8,6 @@ import com.sapphire.stock.analysis.core.model.Task;
  */
 public interface TaskHandler {
     void completeTask(Task task);
+
+    String getTaskType();
 }

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sapphire.stock.analysis.common.dal.dao.SchedulerConfigDao">
+    <resultMap id="schedulerConfig" type="com.sapphire.stock.analysis.common.dal.model.SchedulerConfigDO">
+        <id property="id" column="ID" jdbcType="BIGINT"/>
+        <result property="taskType" column="TASK_TYPE" jdbcType="VARCHAR"/>
+        <result property="cronExpression" column="CRON_EXPRESSION" jdbcType="VARCHAR"/>
+        <result property="limit" column="RECORD_LIMIT" jdbcType="INTEGER"/>
+        <result property="status" column="STATUS" jdbcType="VARCHAR"/>
+        <result property="gmtCreate" column="GMT_CREATE" jdbcType="TIMESTAMP"/>
+        <result property="gmtModified" column="GMT_MODIFIED" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="schedulerConfig">
+        SELECT * FROM SCHEDULER_CONFIG
+    </select>
+
+    <select id="selectById" resultMap="schedulerConfig">
+        SELECT * FROM SCHEDULER_CONFIG WHERE ID = #{configId}
+    </select>
+
+    <select id="selectByType" resultMap="schedulerConfig">
+        SELECT * FROM SCHEDULER_CONFIG WHERE STATUS = 'T' AND TASK_TYPE = #{taskType}
+    </select>
+
+    <update id="updateById" parameterType="com.sapphire.stock.analysis.common.dal.model.SchedulerConfigDO">
+        UPDATE SCHEDULER_CONFIG SET GMT_MODIFIED = CURRENT_TIME
+        <if test="cronExpression != null and cronExpression != ''">
+            , CRON_EXPRESSION = #{cronExpression}
+        </if>
+        <if test="status != null and status != ''">
+            , STATUS = #{status}
+        </if>
+        <if test="limit != null and limit != 0">
+            , RECORD_LIMIT = #{limit}
+        </if>
+        WHERE 1 = 1 AND ID = #{id}
+    </update>
+</mapper>

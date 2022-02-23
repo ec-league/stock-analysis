@@ -1,4 +1,4 @@
-package com.sapphire.stock.web.page;
+package com.sapphire.stock.analysis.web.page;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
