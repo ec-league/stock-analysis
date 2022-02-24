@@ -1,5 +1,6 @@
 package com.sapphire.stock.analysis.core.converter;
 
+import com.sapphire.stock.analysis.common.util.JsonUtils;
 import org.springframework.beans.BeanUtils;
 
 import com.sapphire.stock.analysis.common.dal.model.TaskDo;
@@ -14,6 +15,7 @@ public class DomainConverter {
         Task task = new Task();
 
         BeanUtils.copyProperties(taskDo, task);
+        task.setExtInfo(JsonUtils.toStringMap(taskDo.getExtInfo()));
 
         return task;
     }

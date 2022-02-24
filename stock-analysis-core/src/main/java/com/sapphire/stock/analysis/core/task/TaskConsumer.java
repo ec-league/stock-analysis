@@ -1,13 +1,11 @@
 package com.sapphire.stock.analysis.core.task;
 
-import java.util.Date;
-
-import com.sapphire.stock.analysis.core.constant.TaskStatus;
-import com.sapphire.stock.analysis.core.model.Task;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.sapphire.stock.analysis.core.constant.TaskStatus;
+import com.sapphire.stock.analysis.core.model.Task;
 import com.sapphire.stock.analysis.core.repo.TaskRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -54,9 +52,19 @@ public class TaskConsumer {
 
             // 4. 任务处理完成, 落库 RETRY状态或者FAIL状态
             taskHandler.completeTask(task);
+            task.setStatus(TaskStatus.SUCCESS.name());
+            taskRepository.save(task);
+        } catch (TaskExecuteException e) {
+            log.error("");
+            if (e.isNeedRetry() || task.getRetryTimes() < 3) {
+                task.setStatus(TaskStatus.RETRY.name());
+            } else {
+                task.setStatus(TaskStatus.FAIL.name());
+            }
+            task.setResultMsg(e.getErrorMsg());
+            taskRepository.save(task);
         } catch (Exception e) {
-            log.error("Consume task failed, taskId={}", taskId,
-                e);
+            log.error("Consume task failed, taskId={}", taskId, e);
             task.setStatus(TaskStatus.FAIL.name());
             task.setResultMsg(e.getMessage());
             taskRepository.save(task);

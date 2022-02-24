@@ -27,7 +27,7 @@
         FROM TASK
         WHERE TASK_TYPE = #{taskType}
           AND STATUS in ('INIT', 'RETRY')
-          AND FIRE_DATE > CURRENT_TIMESTAMP
+          AND CURRENT_TIMESTAMP > FIRE_DATE
         ORDER BY FIRE_DATE
         LIMIT ${limit};
     </select>
@@ -58,7 +58,7 @@
         where ID = #{id,jdbcType=BIGINT}
     </update>
 
-    <update id="reStartProcessingTask" >
+    <update id="reStartProcessingTask">
         UPDATE TASK
         SET STATUS='RETRY'
         WHERE STATUS = 'PROCESSING'

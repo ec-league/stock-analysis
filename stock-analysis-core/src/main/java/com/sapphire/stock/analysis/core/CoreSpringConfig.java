@@ -1,5 +1,6 @@
 package com.sapphire.stock.analysis.core;
 
+import com.sapphire.stock.analysis.common.integration.IntegrationSpringConfig;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
@@ -13,7 +14,7 @@ import com.sapphire.stock.analysis.common.dal.DalSpringConfig;
  * Author: 柏云鹏
  * Date: 2022/2/23.
  */
-@Import(DalSpringConfig.class)
+@Import({DalSpringConfig.class, IntegrationSpringConfig.class})
 @SpringBootApplication
 public class CoreSpringConfig {
 

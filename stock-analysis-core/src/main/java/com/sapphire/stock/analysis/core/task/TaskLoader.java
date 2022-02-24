@@ -60,6 +60,8 @@ public class TaskLoader {
     @PostConstruct
     public void reStartProcessingTask() {
         taskRepository.reStartProcessingTask();
+
+        registerCronTrigger();
     }
 
     /**

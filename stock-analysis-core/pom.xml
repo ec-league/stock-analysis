@@ -20,6 +20,16 @@
             <groupId>com.sapphire.stock</groupId>
             <artifactId>stock-analysis-common-dal</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.sapphire.stock</groupId>
+            <artifactId>stock-analysis-common-integration</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sapphire.stock</groupId>
+            <artifactId>stock-analysis-common-util</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

@@ -6,13 +6,14 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Import;
 
+import com.sapphire.stock.analysis.common.integration.IntegrationSpringConfig;
 import com.sapphire.stock.analysis.core.CoreSpringConfig;
 
 /**
  * Author: 柏云鹏
  * Date: 2019/7/29.
  */
-@Import(CoreSpringConfig.class)
+@Import({ CoreSpringConfig.class, IntegrationSpringConfig.class })
 @SpringBootApplication
 public class WebStarter extends SpringBootServletInitializer {
 

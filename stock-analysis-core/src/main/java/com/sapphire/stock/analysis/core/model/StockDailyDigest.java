@@ -13,6 +13,8 @@ import lombok.Data;
 public class StockDailyDigest {
     private long       id;
 
+    private String     tradingAgency;
+
     private String     code;
 
     private String     name;
@@ -27,10 +29,19 @@ public class StockDailyDigest {
 
     private String     partitionDate;
 
+    /**
+     * 成交量(单位手)
+     */
     private BigDecimal tradingVolume;
 
+    /**
+     * 成交量(金额)
+     */
     private BigDecimal businessVolume;
 
+    /**
+     * 换手率
+     */
     private double     turnoverRate;
 
     private double     pe;
