@@ -60,7 +60,7 @@
 
     <update id="reStartProcessingTask">
         UPDATE TASK
-        SET STATUS='RETRY'
-        WHERE STATUS = 'PROCESSING'
+        SET `STATUS`='RETRY'
+        WHERE `STATUS` = 'PROCESSING'
     </update>
 </mapper>

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sapphire.stock.analysis.common.dal.dao.SchedulerConfigDao;
@@ -14,7 +15,8 @@ import com.sapphire.stock.analysis.web.dto.Response;
  * Author: 柏云鹏
  * Date: 2022/2/23.
  */
-@RestController("/api/config")
+@RestController
+@RequestMapping("/api/config")
 public class ConfigController {
 
     @Autowired

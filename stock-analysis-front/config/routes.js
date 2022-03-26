@@ -49,6 +49,19 @@ export default [
     component: './TableList',
   },
   {
+    name: '配置管理',
+    icon: 'table',
+    path: '/config',
+    routes: [
+      {
+        path: '/config/schedule-config',
+        name: '调度管理',
+        icon: 'schedule',
+        component: './Config/ScheduleConfig',
+      }
+    ]
+  },
+  {
     path: '/',
     redirect: '/welcome',
   },
