@@ -3,9 +3,7 @@ package com.sapphire.stock.analysis.web.page;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.sapphire.stock.analysis.common.dal.dao.SchedulerConfigDao;
 import com.sapphire.stock.analysis.common.dal.model.SchedulerConfigDO;
@@ -30,6 +28,16 @@ public class ConfigController {
         response.setSuccess(true);
 
         response.setData(schedulerConfigDOS);
+
+        return response;
+    }
+
+    @PostMapping("/scheduler-config/update.json")
+    public Response<Boolean> update(@RequestBody SchedulerConfigDO schedulerConfigDO) {
+        schedulerConfigDao.updateById(schedulerConfigDO);
+
+        Response<Boolean> response = new Response<>();
+        response.setSuccess(true);
 
         return response;
     }
