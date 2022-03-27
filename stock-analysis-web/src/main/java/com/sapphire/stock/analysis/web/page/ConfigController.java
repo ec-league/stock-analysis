@@ -41,4 +41,15 @@ public class ConfigController {
 
         return response;
     }
+
+    @GetMapping("/scheduler-config/detail.json")
+    public Response<SchedulerConfigDO> getDetail(@RequestParam("id") Long id) {
+        SchedulerConfigDO schedulerConfigDO = schedulerConfigDao.selectById(id);
+
+        Response<SchedulerConfigDO> response = new Response<>();
+        response.setSuccess(true);
+        response.setData(schedulerConfigDO);
+
+        return response;
+    }
 }

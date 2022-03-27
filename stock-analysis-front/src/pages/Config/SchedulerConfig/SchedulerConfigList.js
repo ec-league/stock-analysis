@@ -1,10 +1,9 @@
 import React, { PureComponent } from "react";
 import { connect } from "dva";
-import { Button, Card, Form, Input, Modal, Popconfirm, Select, Switch, Table } from "antd";
+import { Button, Card, Form, Input, Modal, Switch, Table } from "antd";
 import PageHeaderWrapper from "@/components/PageHeaderWrapper";
 
 const FormItem = Form.Item;
-const { Option } = Select;
 
 @connect(({ scheduler_config_list }) => ({
   scheduler_config_list: scheduler_config_list,
@@ -15,14 +14,10 @@ export default class SchedulerConfigList extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'scheduler_config_list/fetch',
-      payload: {
-        count: 8,
-      },
     });
   }
 
   state = {
-    loading: false,
     visible: false,
   };
 
@@ -47,14 +42,12 @@ export default class SchedulerConfigList extends PureComponent {
       payload: selectConfigById,
     });
 
-    this.setState({ loading: false, visible: false });
-
+    window.location.reload();
   };
 
   handleCancel = e => {
     this.setState({
       visible: false,
-      loading: false,
     });
   };
 
@@ -65,13 +58,6 @@ export default class SchedulerConfigList extends PureComponent {
       dispatch,
     } = this.props;
 
-    console.log("selectConfigById", selectConfigById);
-    const submitFormLayout = {
-      wrapperCol: {
-        xs: { span: 24, offset: 0 },
-        sm: { span: 10, offset: 7 },
-      },
-    };
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -156,35 +142,13 @@ export default class SchedulerConfigList extends PureComponent {
     );
   }
 
-  switchChange(text, row) {
-
-    const { dispatch } = this.props;
-
-    if (text === "T") {
-      row.status = "F";
-    } else if (text === "F") {
-      row.status = "T";
-    }
-
-    dispatch({
-      type: 'scheduler_config_list/updateConfigById',
-      payload: row,
-    });
-  }
-
-  switchCancel(text, row) {
-
-    location.reload();
-  }
-
   render() {
     const {
       scheduler_config_list: { data },
-
+      dispatch
     } = this.props;
 
-    const { visible, loading } = this.state;
-    console.log("ddd");
+    const { visible } = this.state;
     const columns = [
       {
         title: 'Id',
@@ -207,16 +171,24 @@ export default class SchedulerConfigList extends PureComponent {
         dataIndex: 'status',
         render: (text, row) => {
           return (
-            <Popconfirm title="确认修改?" onConfirm={(value) => this.switchChange(text, row)}
-                        onCancel={(value) => this.switchCancel(text, row)}>
-              <Switch checkedChildren="开启" unCheckedChildren="关闭" checked={row.status === "T" ? true : false}/>
-            </Popconfirm>);
+            <Switch onChange={(value) => {
+              dispatch({
+                type: 'scheduler_config_list/updateConfigById',
+                payload: {
+                  ...row,
+                  status: value ? 'T' : 'F',
+                }
+              });
+
+              window.location.reload();
+            }} checkedChildren="开启" unCheckedChildren="关闭" checked={row.status === "T"}/>
+          );
         },
       },
       {
         title: '操作',
         dataIndex: 'id',
-        key: 'id',
+        key: 'operation',
         render: text => (
           <span>
             <a href="#" onClick={() => this.showModal(text)}>修改</a>
@@ -224,12 +196,12 @@ export default class SchedulerConfigList extends PureComponent {
       }
     ];
 
+    console.log("data=", data);
     return (
-
       <PageHeaderWrapper title="任务调度配置" content="查看并管理所有的任务调度信息, 属于系统的调度任务配置">
         <Card bordered={false}>
           <Table
-            dataSource={data}
+            dataSource={data ? data : []}
             columns={columns}
           />
           <Modal
@@ -242,7 +214,7 @@ export default class SchedulerConfigList extends PureComponent {
               <Button key="back" onClick={this.handleCancel}>
                 取消
               </Button>,
-              <Button type="primary" htmlType="submit" loading={loading} onClick={this.handleOk}>
+              <Button type="primary" htmlType="submit" onClick={this.handleOk}>
                 提交
               </Button>,
             ]}>
@@ -254,27 +226,3 @@ export default class SchedulerConfigList extends PureComponent {
     );
   }
 }
-
-
-const columns = [
-  {
-    title: 'Id',
-    dataIndex: 'id',
-  },
-  {
-    title: '配置名字',
-    dataIndex: 'name',
-  },
-  {
-    title: '配置描述',
-    dataIndex: 'description',
-  },
-  {
-    title: '配置key',
-    dataIndex: 'dataKey',
-  },
-  {
-    title: '配置值',
-    dataIndex: 'value',
-  },
-];
