@@ -17,6 +17,11 @@ export default [
             path: '/stock/dashboard',
             name: '股票大盘',
             component: './Stock/Dashboard'
+          },
+          {
+            path: '/stock/info-list',
+            name: '股票信息管控',
+            component: './StockInfo/StockInfoList'
           }
         ]
       },

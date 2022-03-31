@@ -1,6 +1,8 @@
 package com.sapphire.stock.analysis.core.converter;
 
+import com.sapphire.stock.analysis.common.dal.model.StockInfoDo;
 import com.sapphire.stock.analysis.common.util.JsonUtils;
+import com.sapphire.stock.analysis.core.model.StockInfo;
 import org.springframework.beans.BeanUtils;
 
 import com.sapphire.stock.analysis.common.dal.model.TaskDo;
@@ -18,5 +20,12 @@ public class DomainConverter {
         task.setExtInfo(JsonUtils.toStringMap(taskDo.getExtInfo()));
 
         return task;
+    }
+
+    public static StockInfo toDomain(StockInfoDo stockInfoDo) {
+        StockInfo stockInfo = new StockInfo();
+        BeanUtils.copyProperties(stockInfoDo, stockInfo);
+
+        return stockInfo;
     }
 }

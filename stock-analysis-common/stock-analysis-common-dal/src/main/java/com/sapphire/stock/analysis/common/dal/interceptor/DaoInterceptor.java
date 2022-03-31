@@ -1,9 +1,10 @@
 package com.sapphire.stock.analysis.common.dal.interceptor;
 
-import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.stereotype.Service;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Author: 柏云鹏
@@ -32,8 +33,8 @@ public class DaoInterceptor implements MethodInterceptor {
             msg = e.getMessage();
             throw e;
         } finally {
-            log.info("(class={},method={})(success={},cost={}ms,ex={},msg={})", className,
-                    method, success, System.currentTimeMillis() - start, exception, msg);
+            log.info("(class={},method={})(success={},cost={}ms,ex={},msg={})", className, method,
+                success, System.currentTimeMillis() - start, exception, msg);
         }
     }
 }

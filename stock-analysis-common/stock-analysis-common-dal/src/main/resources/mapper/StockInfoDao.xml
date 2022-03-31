@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sapphire.stock.analysis.common.dal.dao.StockInfoDao">
+    <resultMap id="BaseResultMap" type="com.sapphire.stock.analysis.common.dal.model.StockInfoDo">
+        <id column="STOCK_CODE" jdbcType="VARCHAR" property="stockCode"/>
+        <result column="STOCK_NAME" jdbcType="VARCHAR" property="stockName"/>
+        <result column="EXT_INFO" jdbcType="VARCHAR" property="extInfo"/>
+        <result column="GMT_CREATE" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="GMT_MODIFIED" jdbcType="TIMESTAMP" property="gmtModified"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        STOCK_CODE, STOCK_NAME, EXT_INFO, GMT_CREATE, GMT_MODIFIED
+    </sql>
+    <select id="selectByCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from STOCK_INFO
+        where STOCK_CODE = #{stockCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select *
+        from STOCK_INFO
+    </select>
+    <delete id="deleteByCode" parameterType="java.lang.String">
+        delete
+        from STOCK_INFO
+        where STOCK_CODE = #{stockCode,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" keyColumn="STOCK_CODE" keyProperty="stockCode"
+            parameterType="com.sapphire.stock.analysis.common.dal.model.StockInfoDo" useGeneratedKeys="true">
+        insert into STOCK_INFO (STOCK_CODE, STOCK_NAME, EXT_INFO, GMT_CREATE,
+                                GMT_MODIFIED)
+        values (#{stockCode}, #{stockName,jdbcType=VARCHAR}, #{extInfo,jdbcType=VARCHAR}, CURRENT_TIMESTAMP,
+                CURRENT_TIMESTAMP)
+    </insert>
+    <update id="updateByCode" parameterType="com.sapphire.stock.analysis.common.dal.model.StockInfoDo">
+        update STOCK_INFO
+        set STOCK_NAME   = #{stockName,jdbcType=VARCHAR},
+            EXT_INFO     = #{extInfo,jdbcType=VARCHAR},
+            GMT_MODIFIED = CURRENT_TIMESTAMP
+        where STOCK_CODE = #{stockCode,jdbcType=VARCHAR}
+    </update>
+</mapper>

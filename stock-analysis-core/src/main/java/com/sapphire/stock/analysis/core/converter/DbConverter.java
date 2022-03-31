@@ -1,5 +1,7 @@
 package com.sapphire.stock.analysis.core.converter;
 
+import com.sapphire.stock.analysis.common.dal.model.StockInfoDo;
+import com.sapphire.stock.analysis.core.model.StockInfo;
 import org.springframework.beans.BeanUtils;
 
 import com.alibaba.druid.support.json.JSONUtils;
@@ -29,5 +31,11 @@ public class DbConverter {
         dbEntity.setExtInfo(JSONUtils.toJSONString(task.getExtInfo()));
 
         return dbEntity;
+    }
+
+    public static StockInfoDo toDbEntity(StockInfo stockInfo) {
+        StockInfoDo stockInfoDo = new StockInfoDo();
+        BeanUtils.copyProperties(stockInfo, stockInfoDo);
+        return stockInfoDo;
     }
 }
