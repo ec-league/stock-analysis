@@ -52,6 +52,24 @@
                 #{totalValue,jdbcType=DECIMAL}, #{circulationMarketValue,jdbcType=DECIMAL},
                 CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     </insert>
+    <insert id="insertAll">
+        insert into STOCK_DAILY_DIGEST (CODE, START_PRICE,
+        END_PRICE, HIGHEST_PRICE, LOWEST_PRICE,
+        PARTITION_DATE, CMT_CREATE, GMT_MODIFIED) VALUES
+        <foreach collection="list" item="item"
+                 separator=",">
+            (
+            #{item.code},
+            #{item.name},
+            #{item.startPrice},
+            #{item.endPrice},
+            #{item.highestPrice},
+            #{item.partitionDate},
+            CURRENT_TIMESTAMP,
+            CURRENT_TIMESTAMP
+            )
+        </foreach>
+    </insert>
     <update id="updateById" parameterType="com.sapphire.stock.analysis.common.dal.model.StockDailyDigestDO">
         update STOCK_DAILY_DIGEST
         set CODE                     = #{code,jdbcType=VARCHAR},
