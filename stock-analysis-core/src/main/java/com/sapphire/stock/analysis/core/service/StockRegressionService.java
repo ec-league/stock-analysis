@@ -1,0 +1,36 @@
+package com.sapphire.stock.analysis.core.service;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.sapphire.stock.analysis.core.model.Task;
+import com.sapphire.stock.analysis.core.repo.TaskRepository;
+
+/**
+ * Author: 柏云鹏 Date: 2022/4/3.
+ */
+@Service
+public class StockRegressionService {
+    @Autowired
+    private TaskRepository taskRepository;
+
+    public void startStockInfoRegression(String code) {
+        Task task = new Task();
+
+        task.setStatus("INIT");
+        Map<String, String> extInfo = new HashMap<>();
+
+        extInfo.put("code", code);
+        extInfo.put("partitionDate", "2000-01-01");
+        task.setExtInfo(extInfo);
+        task.setFireDate(new Date());
+        task.setRetryTimes(0);
+        task.setTaskType("STOCK_INFO_REGRESSION");
+
+        taskRepository.save(task);
+    }
+}

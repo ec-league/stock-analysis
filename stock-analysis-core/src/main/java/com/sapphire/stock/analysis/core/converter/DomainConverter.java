@@ -1,11 +1,13 @@
 package com.sapphire.stock.analysis.core.converter;
 
-import com.sapphire.stock.analysis.common.dal.model.StockInfoDo;
-import com.sapphire.stock.analysis.common.util.JsonUtils;
-import com.sapphire.stock.analysis.core.model.StockInfo;
 import org.springframework.beans.BeanUtils;
 
+import com.sapphire.stock.analysis.common.dal.model.StockDailyDigestDO;
+import com.sapphire.stock.analysis.common.dal.model.StockInfoDo;
 import com.sapphire.stock.analysis.common.dal.model.TaskDo;
+import com.sapphire.stock.analysis.common.util.JsonUtils;
+import com.sapphire.stock.analysis.core.model.StockDailyDigest;
+import com.sapphire.stock.analysis.core.model.StockInfo;
 import com.sapphire.stock.analysis.core.model.Task;
 
 /**
@@ -27,5 +29,11 @@ public class DomainConverter {
         BeanUtils.copyProperties(stockInfoDo, stockInfo);
 
         return stockInfo;
+    }
+
+    public static StockDailyDigest toDomain(StockDailyDigestDO stockDailyDigestDO) {
+        StockDailyDigest stockDailyDigest = new StockDailyDigest();
+        BeanUtils.copyProperties(stockDailyDigestDO, stockDailyDigest);
+        return stockDailyDigest;
     }
 }

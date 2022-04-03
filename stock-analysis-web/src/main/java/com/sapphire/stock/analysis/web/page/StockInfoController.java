@@ -2,6 +2,7 @@ package com.sapphire.stock.analysis.web.page;
 
 import java.util.List;
 
+import com.sapphire.stock.analysis.core.service.StockRegressionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,9 @@ import com.sapphire.stock.analysis.web.dto.Response;
 @RestController
 @RequestMapping("/api/stock-info")
 public class StockInfoController {
+
+    @Autowired
+    private StockRegressionService stockRegressionService;
 
     @Autowired
     private StockInfoRepository stockInfoRepository;
@@ -34,11 +38,18 @@ public class StockInfoController {
 
     @PostMapping("/save.json")
     public Response saveStockInfo(@RequestBody StockInfo stockInfo) {
-
         Response response = new Response();
 
         response.setSuccess(stockInfoRepository.save(stockInfo));
 
+        return response;
+    }
+
+    @PostMapping("/start-regression.json")
+    public Response startRegression(@RequestParam String code) {
+        stockRegressionService.startStockInfoRegression(code);
+
+        Response response = new Response();
         return response;
     }
 }

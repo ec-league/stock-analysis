@@ -21,7 +21,12 @@ public class StockDailyDigestRepo {
     public void save(StockDailyDigest stockDailyDigest) {
         StockDailyDigestDO dbEntity = DbConverter.toDbEntity(stockDailyDigest);
 
-        if (stockDailyDigest.getId() > 0) {
+        StockDailyDigestDO stockDailyDigestDO = stockDailyDigestDao
+            .selectByCodeAndPartitionDate(dbEntity.getCode(), dbEntity.getPartitionDate());
+
+        if (stockDailyDigestDO != null) {
+            stockDailyDigestDao.updateByCodeAndPartitionDate(dbEntity);
+        } else if (dbEntity.getId() != null && dbEntity.getId() > 0L) {
             stockDailyDigestDao.updateById(dbEntity);
         } else {
             stockDailyDigestDao.insert(dbEntity);

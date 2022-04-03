@@ -31,6 +31,12 @@
         from STOCK_DAILY_DIGEST
         where ID = #{id,jdbcType=BIGINT}
     </select>
+    <select id="selectByCodeAndPartitionDate" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from STOCK_DAILY_DIGEST
+        where CODE = #{code} AND PARTITION_DATE = #{partitionDate}
+    </select>
     <delete id="deleteById" parameterType="java.lang.Long">
         delete
         from STOCK_DAILY_DIGEST
@@ -72,8 +78,7 @@
     </insert>
     <update id="updateById" parameterType="com.sapphire.stock.analysis.common.dal.model.StockDailyDigestDO">
         update STOCK_DAILY_DIGEST
-        set CODE                     = #{code,jdbcType=VARCHAR},
-            `NAME`                   = #{name,jdbcType=VARCHAR},
+        set `NAME`                   = #{name,jdbcType=VARCHAR},
             START_PRICE              = #{startPrice,jdbcType=DECIMAL},
             END_PRICE                = #{endPrice,jdbcType=DECIMAL},
             HIGHEST_PRICE            = #{highestPrice,jdbcType=DECIMAL},
@@ -88,5 +93,24 @@
             CIRCULATION_MARKET_VALUE = #{circulationMarketValue,jdbcType=DECIMAL},
             GMT_MODIFIED             = CURRENT_TIMESTAMP
         where ID = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByCodeAndPartitionDate"
+            parameterType="com.sapphire.stock.analysis.common.dal.model.StockDailyDigestDO">
+        update STOCK_DAILY_DIGEST
+        set `NAME`                   = #{name,jdbcType=VARCHAR},
+            START_PRICE              = #{startPrice,jdbcType=DECIMAL},
+            END_PRICE                = #{endPrice,jdbcType=DECIMAL},
+            HIGHEST_PRICE            = #{highestPrice,jdbcType=DECIMAL},
+            LOWEST_PRICE             = #{lowestPrice,jdbcType=DECIMAL},
+            TRADING_VOLUME           = #{tradingVolume,jdbcType=DECIMAL},
+            BUSINESS_VOLUME          = #{businessVolume,jdbcType=DECIMAL},
+            TURNOVER_RATE            = #{turnoverRate,jdbcType=DOUBLE},
+            PE                       = #{pe,jdbcType=DOUBLE},
+            PB                       = #{pb,jdbcType=DOUBLE},
+            TOTAL_VALUE              = #{totalValue,jdbcType=DECIMAL},
+            CIRCULATION_MARKET_VALUE = #{circulationMarketValue,jdbcType=DECIMAL},
+            GMT_MODIFIED             = CURRENT_TIMESTAMP
+        where CODE = #{code}
+          AND PARTITION_DATE = #{partitionDate}
     </update>
 </mapper>

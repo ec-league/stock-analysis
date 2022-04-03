@@ -56,7 +56,8 @@ public class TaskConsumer {
             taskRepository.save(task);
         } catch (TaskExecuteException e) {
             log.error("");
-            if (e.isNeedRetry() || task.getRetryTimes() < 3) {
+            if (e.isNeedRetry() && task.getRetryTimes() < 3) {
+                task.setRetryTimes(task.getRetryTimes() + 1);
                 task.setStatus(TaskStatus.RETRY.name());
             } else {
                 task.setStatus(TaskStatus.FAIL.name());

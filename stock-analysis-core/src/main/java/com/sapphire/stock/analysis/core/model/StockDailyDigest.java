@@ -11,7 +11,7 @@ import lombok.Data;
  */
 @Data
 public class StockDailyDigest {
-    private long       id;
+    private Long       id;
 
     private String     tradingAgency;
 
@@ -42,11 +42,11 @@ public class StockDailyDigest {
     /**
      * 换手率
      */
-    private double     turnoverRate;
+    private Double     turnoverRate;
 
-    private double     pe;
+    private Double     pe;
 
-    private double     pb;
+    private Double     pb;
 
     private BigDecimal totalValue;
 
