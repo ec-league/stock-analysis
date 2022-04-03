@@ -12,7 +12,8 @@ const FormItem = Form.Item;
 }))
 export default class StockInfoList extends PureComponent {
   state = {
-    visible: false
+    visible: false,
+    record: null
   }
 
   componentDidMount() {
@@ -37,18 +38,70 @@ export default class StockInfoList extends PureComponent {
       }
     });
 
-    this.setState({ visible: false });
+    this.setState({ visible: false, record: null });
   }
 
   handleCancel() {
-    this.setState({ visible: false })
+    this.setState({ visible: false, record: null })
+  }
+
+  renderModal() {
+    const {
+      form: { getFieldDecorator }
+    } = this.props;
+
+    return (
+      <Modal
+        title={this.state.record ? "更新股票信息": "新增股票信息"}
+        visible={this.state.visible}
+        onCancel={() => this.handleCancel()}
+        onOk={() => {
+        }}
+        destroyOnClose
+        footer={[
+          <Button key="back" onClick={() => this.handleCancel()}>
+            取消
+          </Button>,
+          <Button type="primary" htmlType="submit" onClick={() => this.handleOk()}>
+            提交
+          </Button>,
+        ]}>
+        <Form hideRequiredMark style={{ marginTop: 8 }}>
+          <FormItem {...formItemLayout} label="股票代码">
+            {getFieldDecorator('stockCode', {
+              initialValue: this.state.record ? this.state.record.stockCode : '',
+              rules: [
+                {
+                  required: true,
+                  message: "股票代码",
+                },
+              ],
+            })(
+              <Input/>
+            )}
+          </FormItem>
+          <FormItem {...formItemLayout} label="股票名称">
+            {getFieldDecorator('stockName', {
+              initialValue: this.state.record ? this.state.record.stockName : '',
+              rules: [
+                {
+                  required: true,
+                  message: "股票名称",
+                },
+              ],
+            })(
+              <Input/>
+            )}
+          </FormItem>
+        </Form>
+      </Modal>
+    )
   }
 
   render() {
 
     const {
       stock_info: { stock_info_list },
-      form: { getFieldDecorator }
     } = this.props;
 
     const columns = [
@@ -68,9 +121,9 @@ export default class StockInfoList extends PureComponent {
         title: '操作',
         dataIndex: 'stockCode',
         key: 'operation',
-        render: text => (
+        render: (text, record) => (
           <span>
-            <a href="#">修改</a>
+            <a href="#" onClick={() => this.setState({ record: record, visible: true, })}>修改</a>
           </span>),
       }
     ];
@@ -90,48 +143,7 @@ export default class StockInfoList extends PureComponent {
           <Table columns={columns}
                  dataSource={stock_info_list}/>
         </Card>
-        <Modal
-          title={"新增股票信息"}
-          visible={this.state.visible}
-          onCancel={() => this.handleCancel()}
-          onOk={() => {
-          }}
-          destroyOnClose
-          footer={[
-            <Button key="back" onClick={() => this.handleCancel()}>
-              取消
-            </Button>,
-            <Button type="primary" htmlType="submit" onClick={() => this.handleOk()}>
-              提交
-            </Button>,
-          ]}>
-          <Form hideRequiredMark style={{ marginTop: 8 }}>
-            <FormItem {...formItemLayout} label="股票代码">
-              {getFieldDecorator('stockCode', {
-                rules: [
-                  {
-                    required: true,
-                    message: "股票代码",
-                  },
-                ],
-              })(
-                <Input/>
-              )}
-            </FormItem>
-            <FormItem {...formItemLayout} label="股票名称">
-              {getFieldDecorator('stockName', {
-                rules: [
-                  {
-                    required: true,
-                    message: "股票名称",
-                  },
-                ],
-              })(
-                <Input/>
-              )}
-            </FormItem>
-          </Form>
-        </Modal>
+        {this.renderModal()}
       </PageHeaderWrapper>
     )
   }
