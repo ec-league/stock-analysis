@@ -1,0 +1,27 @@
+{
+  "processStageMap": {
+    "PRE_PROCESS": {
+      "actions": [
+        "flinkTaskStartAction"
+      ]
+    },
+    "PROCESS": {
+      "actions": [
+        "replaceParamsAction",
+        "sqlParseAction",
+        "findSourceAndSinkAction",
+        "checkSourceAndSinkAction",
+        "submitFlinkSqlAction",
+        // 提交一个异步任务
+        "submitAsyncTaskAction",
+        "setSuccessAction"
+      ]
+    },
+    "ERROR_PROCESS": {
+      "actions": [
+        "flinkTaskFailAction",
+        "commonErrorHandleAction"
+      ]
+    }
+  }
+}

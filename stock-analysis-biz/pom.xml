@@ -30,5 +30,14 @@
             <groupId>com.sapphire.stock</groupId>
             <artifactId>stock-analysis-common-integration</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-table-planner_2.12</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+        </dependency>
     </dependencies>
 </project>

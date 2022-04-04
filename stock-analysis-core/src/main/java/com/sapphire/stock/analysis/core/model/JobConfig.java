@@ -1,10 +1,13 @@
 package com.sapphire.stock.analysis.core.model;
 
+import lombok.Data;
+
 import java.util.List;
 
 /**
  * Author: 柏云鹏 Date: 2022/4/3.
  */
+@Data
 public class JobConfig {
     private List<Long> sourceIds;
     private List<Long> sinkIds;

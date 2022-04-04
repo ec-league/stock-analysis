@@ -84,4 +84,6 @@ public class FlinkScheduleJobRepository {
     public boolean updateStatusSuccess(FlinkScheduleJob job) {
         return flinkScheduleJobDao.updateStatusEnable(job.getId()) > 0;
     }
+
+
 }

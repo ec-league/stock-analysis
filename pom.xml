@@ -92,6 +92,13 @@
                 <version>2.8.2</version>
             </dependency>
 
+            <!-- flink-->
+            <dependency>
+                <groupId>org.apache.flink</groupId>
+                <artifactId>flink-table-planner_2.12</artifactId>
+                <version>1.10.0</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.sapphire.stock</groupId>
                 <artifactId>stock-analysis-common-dal</artifactId>
