@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.sapphire.stock.analysis.common.dal.model.StockDailyDigestDO;
 import com.sapphire.stock.analysis.common.integration.client.TencentStockClient;
 import com.sapphire.stock.analysis.core.model.Task;
-import com.sapphire.stock.analysis.core.repo.StockDailyDigestRepo;
+import com.sapphire.stock.analysis.core.repo.StockDailyDigestRepository;
 import com.sapphire.stock.analysis.core.task.TaskHandler;
 
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ public class StockDigestQueryHandler implements TaskHandler {
     private TencentStockClient   tencentStockClient;
 
     @Autowired
-    private StockDailyDigestRepo stockDailyDigestRepo;
+    private StockDailyDigestRepository stockDailyDigestRepo;
 
     @Override
     public void completeTask(Task task) {

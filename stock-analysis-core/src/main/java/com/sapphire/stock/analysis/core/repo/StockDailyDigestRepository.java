@@ -13,7 +13,7 @@ import com.sapphire.stock.analysis.core.model.StockDailyDigest;
  * Date: 2022/2/23.
  */
 @Repository
-public class StockDailyDigestRepo {
+public class StockDailyDigestRepository {
 
     @Autowired
     private StockDailyDigestDao stockDailyDigestDao;

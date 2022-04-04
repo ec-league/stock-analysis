@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sapphire.stock.analysis.common.dal.dao.TaskSequenceFlowDao">
+    <resultMap id="taskSequenceFlowDo" type="com.sapphire.stock.analysis.common.dal.model.TaskSequenceFlowDo">
+        <id property="id" column="ID" jdbcType="BIGINT"/>
+        <result property="parentId" column="PARENT_ID" jdbcType="BIGINT"/>
+        <result property="schedulerJobId" column="SCHEDULER_JOB_ID" jdbcType="BIGINT"/>
+        <result property="taskFlowType" column="TASK_FLOW_TYPE" jdbcType="VARCHAR"/>
+        <result property="taskInfo" column="TASK_INFO" jdbcType="VARCHAR"/>
+        <result property="status" column="STATUS" jdbcType="VARCHAR"/>
+        <result property="gmtCreate" column="GMT_CREATE" jdbcType="TIMESTAMP"/>
+        <result property="gmtModified" column="GMT_MODIFIED" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.sapphire.stock.analysis.common.dal.model.TaskSequenceFlowDo">
+        INSERT INTO TASK_SEQUENCE_FLOW (PARENT_ID, SCHEDULER_JOB_ID, TASK_FLOW_TYPE, TASK_INFO, STATUS, GMT_CREATE,
+        GMT_MODIFIED)
+        VALUES (#{parentId}, #{schedulerJobId}, #{taskFlowType}, #{taskInfo}, #{status}, #{gmtCreate}, #{gmtModified})
+        <selectKey keyProperty="id" keyColumn="ID" resultType="java.lang.Long" order="AFTER"
+                   statementType="PREPARED">
+            SELECT last_insert_id() as id
+        </selectKey>
+    </insert>
+
+    <insert id="insertAll">
+        INSERT INTO TASK_SEQUENCE_FLOW (PARENT_ID, SCHEDULER_JOB_ID, TASK_FLOW_TYPE, TASK_INFO, STATUS, GMT_CREATE,
+        GMT_MODIFIED)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.parentId}, #{item.schedulerJobId}, #{item.taskFlowType}, #{item.taskInfo}, #{item.status},
+            #{item.gmtCreate},
+            #{item.gmtModified})
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="com.sapphire.stock.analysis.common.dal.model.TaskSequenceFlowDo">
+        UPDATE TASK_SEQUENCE_FLOW
+        SET GMT_MODIFIED = CURRENT_TIME,
+            STATUS       = #{status},
+            TASK_INFO    = #{taskInfo}
+        WHERE ID = #{id}
+    </update>
+
+    <select id="selectById" resultMap="taskSequenceFlowDo">
+        SELECT *
+        FROM TASK_SEQUENCE_FLOW
+        WHERE ID = #{id}
+    </select>
+
+    <select id="selectExecuteFlow" resultMap="taskSequenceFlowDo">
+        SELECT *
+        FROM TASK_SEQUENCE_FLOW
+        WHERE PARENT_ID = #{taskSequenceFlowId}
+          AND STATUS in ('INIT', 'RETRY')
+        ORDER BY ID
+        LIMIT 1
+    </select>
+
+    <select id="selectByParentId" resultMap="taskSequenceFlowDo">
+        SELECT *
+        FROM TASK_SEQUENCE_FLOW
+        WHERE PARENT_ID = #{parentId}
+    </select>
+
+    <select id="selectBySchedulerJobId" resultMap="taskSequenceFlowDo">
+        SELECT *
+        FROM TASK_SEQUENCE_FLOW
+        WHERE SCHEDULER_JOB_ID = #{schedulerJobId}
+    </select>
+
+    <select id="selectParentBySchedulerJobId" resultMap="taskSequenceFlowDo">
+        SELECT *
+        FROM TASK_SEQUENCE_FLOW
+        WHERE SCHEDULER_JOB_ID = #{schedulerJobId}
+          AND PARENT_ID IS NULL
+        ORDER BY ID DESC
+    </select>
+
+    <delete id="deleteScheduleFlow">
+        DELETE
+        FROM TASK_SEQUENCE_FLOW
+        WHERE PARENT_ID = #{id}
+           OR ID = #{id}
+    </delete>
+
+    <select id="selectParentByTimeRange" resultMap="taskSequenceFlowDo">
+        SELECT *
+        FROM TASK_SEQUENCE_FLOW
+        WHERE GMT_CREATE &lt; #{end}
+          AND GMT_CREATE &gt; #{start}
+          AND PARENT_ID is NULL
+    </select>
+</mapper>

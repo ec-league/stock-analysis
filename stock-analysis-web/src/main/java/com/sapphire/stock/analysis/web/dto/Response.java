@@ -41,4 +41,29 @@ public class Response<T> {
     public void setData(T data) {
         this.data = data;
     }
+
+    public static Response errorResponse(String resultCode, String resultMsg) {
+        Response response = new Response();
+        response.setSuccess(false);
+        response.setResultCode(resultCode);
+        response.setResultMsg(resultMsg);
+        return response;
+    }
+
+    public static Response errorResponse(String resultMsg) {
+        Response response = new Response();
+        response.setSuccess(false);
+        response.setResultCode("ERROR");
+        response.setResultMsg(resultMsg);
+        return response;
+    }
+
+    public static <T> Response successResponse(T t) {
+        Response response = new Response();
+        response.setSuccess(true);
+        response.setResultCode("SUCCESS");
+        response.setResultMsg("成功");
+        response.setData(t);
+        return response;
+    }
 }

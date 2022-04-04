@@ -12,7 +12,7 @@ import com.sapphire.stock.analysis.common.integration.client.HistoryStockClient;
 import com.sapphire.stock.analysis.core.converter.DomainConverter;
 import com.sapphire.stock.analysis.core.model.StockDailyDigest;
 import com.sapphire.stock.analysis.core.model.Task;
-import com.sapphire.stock.analysis.core.repo.StockDailyDigestRepo;
+import com.sapphire.stock.analysis.core.repo.StockDailyDigestRepository;
 import com.sapphire.stock.analysis.core.repo.TaskRepository;
 import com.sapphire.stock.analysis.core.task.TaskExecuteException;
 import com.sapphire.stock.analysis.core.task.TaskHandler;
@@ -33,7 +33,7 @@ public class StockInfoHistoryRegressionHandler implements TaskHandler {
     private HistoryStockClient   historyStockClient;
 
     @Autowired
-    private StockDailyDigestRepo stockDailyDigestRepo;
+    private StockDailyDigestRepository stockDailyDigestRepo;
 
     @Override
     public void completeTask(Task task) {

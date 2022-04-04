@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sapphire.stock.analysis.common.dal.dao.FlinkSQLJobDao">
+    <resultMap id="flinkJobDo" type="com.sapphire.stock.analysis.common.dal.model.FlinkSQLJobDo">
+        <id property="id" column="ID" jdbcType="BIGINT"/>
+        <result property="name" column="NAME" jdbcType="VARCHAR"/>
+        <result property="type" column="TYPE" jdbcType="VARCHAR"/>
+        <result property="taskSeqId" column="TASK_SEQ_ID" jdbcType="BIGINT"/>
+        <result property="flinkJobId" column="FLINK_JOB_ID" jdbcType="VARCHAR"/>
+        <result property="flinkConfig" column="FLINK_CONFIG" jdbcType="VARCHAR"/>
+        <result property="jobConfig" column="JOB_CONFIG" jdbcType="VARCHAR"/>
+        <result property="status" column="STATUS" jdbcType="VARCHAR"/>
+        <result property="resultMsg" column="RESULT_MSG" jdbcType="VARCHAR"/>
+        <result property="extInfo" column="EXT_INFO" jdbcType="VARCHAR"/>
+        <result property="gmtCreate" column="GMT_CREATE" jdbcType="TIMESTAMP"/>
+        <result property="gmtModified" column="GMT_MODIFIED" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.sapphire.stock.analysis.common.dal.model.FlinkSQLJobDo">
+        INSERT INTO FLINK_SQL_JOB (NAME, TYPE, TASK_SEQ_ID, FLINK_JOB_ID, JOB_CONFIG, FLINK_CONFIG, STATUS, RESULT_MSG,
+        EXT_INFO, GMT_CREATE, GMT_MODIFIED)
+        VALUES (#{name}, #{type}, #{taskSeqId}, #{flinkJobId}, #{jobConfig}, #{flinkConfig}, #{status}, #{resultMsg},
+        #{extInfo}, #{gmtCreate}, #{gmtModified})
+        <selectKey keyProperty="id" keyColumn="ID" resultType="java.lang.Long" order="AFTER"
+                   statementType="PREPARED">
+            SELECT last_insert_id() as id
+        </selectKey>
+    </insert>
+
+    <update id="update" parameterType="com.sapphire.stock.analysis.common.dal.model.FlinkSQLJobDo">
+        UPDATE FLINK_SQL_JOB
+        SET GMT_MODIFIED = #{gmtModified},
+            STATUS       = #{status},
+            RESULT_MSG   = #{resultMsg},
+            FLINK_JOB_ID = #{flinkJobId},
+            NAME         = #{name},
+            TYPE         = #{type},
+            JOB_CONFIG   = #{jobConfig},
+            FLINK_CONFIG   = #{flinkConfig},
+            EXT_INFO     = #{extInfo}
+        WHERE ID = #{id}
+    </update>
+
+    <select id="selectAll" resultMap="flinkJobDo">
+        SELECT *
+        FROM FLINK_SQL_JOB ORDER BY ID DESC
+    </select>
+
+    <select id="selectById" resultMap="flinkJobDo">
+        SELECT *
+        FROM FLINK_SQL_JOB
+        WHERE ID = #{id}
+    </select>
+    <select id="selectByName" resultType="com.sapphire.stock.analysis.common.dal.model.FlinkSQLJobDo">
+         SELECT *
+        FROM FLINK_SQL_JOB
+        WHERE NAME = #{name}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        <!--@mbg.generated-->
+        delete from FLINK_SQL_JOB
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+</mapper>

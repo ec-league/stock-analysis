@@ -33,6 +33,10 @@
 
         <dependency>
             <groupId>com.sapphire.stock</groupId>
+            <artifactId>stock-analysis-biz</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sapphire.stock</groupId>
             <artifactId>stock-analysis-core</artifactId>
         </dependency>
         <dependency>

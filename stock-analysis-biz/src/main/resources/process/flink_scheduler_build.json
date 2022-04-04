@@ -1,0 +1,17 @@
+{
+  "processStageMap": {
+    "PROCESS": {
+      "actions": [
+        "saveSchedulerJobAction",
+        "buildTaskSequenceFlowListAction",
+        "buildFlinkSchedulerTaskAction",
+        "setSuccessAction"
+      ]
+    },
+    "ERROR_PROCESS": {
+      "actions": [
+        "commonErrorHandleAction"
+      ]
+    }
+  }
+}

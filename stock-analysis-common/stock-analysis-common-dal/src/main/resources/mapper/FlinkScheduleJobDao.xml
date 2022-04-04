@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sapphire.stock.analysis.common.dal.dao.FlinkScheduleJobDao">
+    <resultMap id="flinkJobDo" type="com.sapphire.stock.analysis.common.dal.model.FlinkScheduleJobDo">
+        <id property="id" column="ID" jdbcType="BIGINT"/>
+        <result property="name" column="NAME" jdbcType="VARCHAR"/>
+        <result property="description" column="DESCRIPTION" jdbcType="VARCHAR"/>
+        <result property="cronExpression" column="CRON_EXPRESSION" jdbcType="VARCHAR"/>
+        <result property="status" column="STATUS" jdbcType="VARCHAR"/>
+        <result property="tag" column="TAG" jdbcType="VARCHAR"/>
+        <result property="extInfo" column="EXT_INFO" jdbcType="VARCHAR"/>
+        <result property="gmtCreate" column="GMT_CREATE" jdbcType="TIMESTAMP"/>
+        <result property="gmtModified" column="GMT_MODIFIED" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.sapphire.stock.analysis.common.dal.model.FlinkScheduleJobDo">
+        INSERT INTO FLINK_SCHEDULE_JOB (NAME, DESCRIPTION, CRON_EXPRESSION, STATUS, TAG, EXT_INFO, GMT_CREATE,
+        GMT_MODIFIED)
+        VALUES (#{name}, #{description}, #{cronExpression}, #{status}, #{tag}, #{extInfo},
+        CURRENT_TIME, CURRENT_TIME)
+        <selectKey keyProperty="id" keyColumn="ID" resultType="java.lang.Long" order="AFTER"
+                   statementType="PREPARED">
+            SELECT last_insert_id() as id
+        </selectKey>
+    </insert>
+
+    <update id="update" parameterType="com.sapphire.stock.analysis.common.dal.model.FlinkScheduleJobDo">
+        UPDATE FLINK_SCHEDULE_JOB
+        SET GMT_MODIFIED    = CURRENT_TIME,
+            EXT_INFO        = #{extInfo},
+            STATUS          = #{status},
+            TAG             = #{tag},
+            NAME            = #{name},
+            DESCRIPTION     = #{description},
+            CRON_EXPRESSION = #{cronExpression}
+        WHERE ID = #{id}
+    </update>
+
+    <update id="updateStatusEnable">
+        UPDATE FLINK_SCHEDULE_JOB
+        SET GMT_MODIFIED = CURRENT_TIME,
+            STATUS       = 'T'
+        WHERE ID = #{id}
+          AND STATUS = 'F'
+    </update>
+
+    <select id="selectAll" resultMap="flinkJobDo">
+        SELECT *
+        FROM FLINK_SCHEDULE_JOB
+    </select>
+
+    <select id="selectByTag" resultMap="flinkJobDo">
+        SELECT *
+        FROM FLINK_SCHEDULE_JOB
+        WHERE TAG = #{tag}
+    </select>
+
+    <select id="selectById" resultMap="flinkJobDo">
+        SELECT *
+        FROM FLINK_SCHEDULE_JOB
+        WHERE ID = #{id}
+    </select>
+
+    <delete id="deleteById">
+        DELETE
+        FROM FLINK_SCHEDULE_JOB
+        WHERE ID = #{id}
+    </delete>
+
+    <select id="selectByName" resultMap="flinkJobDo">
+        SELECT *
+        FROM FLINK_SCHEDULE_JOB
+        WHERE name = #{name}
+        limit 1
+    </select>
+
+</mapper>

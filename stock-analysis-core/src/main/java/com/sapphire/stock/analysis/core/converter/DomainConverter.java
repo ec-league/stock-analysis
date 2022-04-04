@@ -1,14 +1,12 @@
 package com.sapphire.stock.analysis.core.converter;
 
+import com.sapphire.stock.analysis.core.model.enums.FlinkSqlStatus;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 
-import com.sapphire.stock.analysis.common.dal.model.StockDailyDigestDO;
-import com.sapphire.stock.analysis.common.dal.model.StockInfoDo;
-import com.sapphire.stock.analysis.common.dal.model.TaskDo;
+import com.sapphire.stock.analysis.common.dal.model.*;
 import com.sapphire.stock.analysis.common.util.JsonUtils;
-import com.sapphire.stock.analysis.core.model.StockDailyDigest;
-import com.sapphire.stock.analysis.core.model.StockInfo;
-import com.sapphire.stock.analysis.core.model.Task;
+import com.sapphire.stock.analysis.core.model.*;
 
 /**
  * Author: 柏云鹏
@@ -31,9 +29,79 @@ public class DomainConverter {
         return stockInfo;
     }
 
+    public static FlinkScheduleJob toDomain(FlinkScheduleJobDo dbEntity) {
+        FlinkScheduleJob domain = new FlinkScheduleJob();
+
+        if (dbEntity == null) {
+            return null;
+        }
+
+        domain.setId(dbEntity.getId());
+        domain.setName(dbEntity.getName());
+        domain.setCronExpression(dbEntity.getCronExpression());
+        domain.setDescription(dbEntity.getDescription());
+        domain.setGmtCreate(dbEntity.getGmtCreate());
+        domain.setGmtModified(dbEntity.getGmtModified());
+        domain.setStatus(dbEntity.getStatus());
+        domain.setTag(dbEntity.getTag());
+        domain.setExtInfo(JsonUtils.fromJson(dbEntity.getExtInfo(), FlinkScheduleJobConfig.class));
+        return domain;
+    }
+
     public static StockDailyDigest toDomain(StockDailyDigestDO stockDailyDigestDO) {
         StockDailyDigest stockDailyDigest = new StockDailyDigest();
         BeanUtils.copyProperties(stockDailyDigestDO, stockDailyDigest);
         return stockDailyDigest;
     }
+
+    public static FlinkSQLJob toDomain(FlinkSQLJobDo dbEntity) {
+        if (dbEntity == null) {
+            return null;
+        }
+
+        FlinkSQLJob domain = new FlinkSQLJob();
+
+        domain.setId(dbEntity.getId());
+        domain.setFlinkConfig(JsonUtils.fromJson(dbEntity.getFlinkConfig(), FlinkConfig.class));
+        if (StringUtils.isEmpty(dbEntity.getJobConfig())
+            || dbEntity.getJobConfig().equals("null")) {
+            domain.setJobConfig(new JobConfig());
+        } else {
+            domain.setJobConfig(JsonUtils.fromJson(dbEntity.getJobConfig(), JobConfig.class));
+        }
+        domain.setName(dbEntity.getName());
+        domain.setFlinkJobId(dbEntity.getFlinkJobId());
+        domain.setStatus(StringUtils.isEmpty(dbEntity.getStatus()) ? FlinkSqlStatus.INIT.name()
+            : dbEntity.getStatus());
+        domain.setGmtCreate(dbEntity.getGmtCreate());
+        domain.setGmtModified(dbEntity.getGmtModified());
+        domain.setTaskSeqId(dbEntity.getTaskSeqId());
+        domain.setType(dbEntity.getType());
+        domain.setResultMsg(dbEntity.getResultMsg());
+        if (StringUtils.isEmpty(dbEntity.getExtInfo()) || dbEntity.getExtInfo().equals("null")) {
+            domain.setExtInfo(new FlinkSqlExtInfo());
+        } else {
+            domain.setExtInfo(JsonUtils.fromJson(dbEntity.getExtInfo(), FlinkSqlExtInfo.class));
+        }
+
+        return domain;
+    }
+
+    public static TaskSequenceFlow toDomain(TaskSequenceFlowDo flowDo) {
+        if (flowDo == null) {
+            return null;
+        }
+        TaskSequenceFlow taskSequenceFlow = new TaskSequenceFlow();
+        taskSequenceFlow.setId(flowDo.getId());
+        taskSequenceFlow.setParentId(flowDo.getParentId() != null ? flowDo.getParentId() : -1L);
+        taskSequenceFlow.setSchedulerJobId(flowDo.getSchedulerJobId());
+        taskSequenceFlow.setTaskFlowType(flowDo.getTaskFlowType());
+        taskSequenceFlow.setStatus(flowDo.getStatus());
+        taskSequenceFlow.setTaskInfo(JsonUtils.toStringMap(flowDo.getTaskInfo()));
+        taskSequenceFlow.setGmtCreate(flowDo.getGmtCreate());
+        taskSequenceFlow.setGmtModified(flowDo.getGmtModified());
+        return taskSequenceFlow;
+    }
+
+
 }
