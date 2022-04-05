@@ -88,4 +88,18 @@ public class DbConverter {
         dbEntity.setStatus(taskSequenceFlow.getStatus());
         return dbEntity;
     }
+
+    public static FlinkGeneralSourceDo toDbEntity(FlinkGeneralSource flinkGeneralSource) {
+        FlinkGeneralSourceDo dbEntity = new FlinkGeneralSourceDo();
+        dbEntity.setId(flinkGeneralSource.getId());
+        dbEntity.setTableName(flinkGeneralSource.getTableName());
+        dbEntity.setSchemaName(flinkGeneralSource.getSchemaName());
+        dbEntity.setType(flinkGeneralSource.getType());
+        dbEntity.setGmtCreate(flinkGeneralSource.getGmtCreate() == null ? new Date()
+            : flinkGeneralSource.getGmtCreate());
+        dbEntity.setGmtModified(flinkGeneralSource.getGmtModified() == null ? new Date()
+            : flinkGeneralSource.getGmtModified());
+        dbEntity.setSourceConfig(JsonUtils.toJsonStr(flinkGeneralSource.getSourceConfig()));
+        return dbEntity;
+    }
 }

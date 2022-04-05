@@ -122,3 +122,18 @@ create table if not exists stock_analysis.TASK_SEQUENCE_FLOW
     DEFAULT CHARSET = utf8mb4
     COMMENT 'Flink子任务任务执行记录表';
 
+create table if not exists stock_analysis.FLINK_GENERAL_SOURCE
+(
+    ID            bigint auto_increment primary key,
+    SCHEMA_NAME   VARCHAR(64),
+    TABLE_NAME    varchar(64)  null,
+    TYPE          varchar(128) null,
+    SOURCE_CONFIG mediumtext   null,
+    GMT_CREATE    datetime     null,
+    GMT_MODIFIED  datetime     null,
+    UNIQUE INDEX idx_uniq_schema_name_table_name (SCHEMA_NAME, TABLE_NAME)
+)
+    ENGINE = innodb
+    DEFAULT CHARSET = utf8mb4
+    COMMENT 'Flink数据源表';
+

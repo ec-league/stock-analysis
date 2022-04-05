@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.sapphire.stock.analysis.common.dal.dao.SchedulerConfigDao;
 import com.sapphire.stock.analysis.common.dal.model.SchedulerConfigDO;
-import com.sapphire.stock.analysis.web.dto.Response;
+import com.sapphire.stock.analysis.core.model.Response;
 
 /**
  * Author: 柏云鹏

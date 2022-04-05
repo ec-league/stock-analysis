@@ -1,4 +1,4 @@
-package com.sapphire.stock.analysis.web.dto;
+package com.sapphire.stock.analysis.core.model;
 
 /**
  * Author: 柏云鹏

@@ -20,7 +20,7 @@ import com.sapphire.stock.analysis.core.process.ProcessExecutor;
 import com.sapphire.stock.analysis.core.process.cache.ProcessConfigCache;
 import com.sapphire.stock.analysis.core.repo.FlinkScheduleJobRepository;
 import com.sapphire.stock.analysis.core.repo.FlinkSqlJobRepository;
-import com.sapphire.stock.analysis.web.dto.Response;
+import com.sapphire.stock.analysis.core.model.Response;
 
 import lombok.extern.slf4j.Slf4j;
 

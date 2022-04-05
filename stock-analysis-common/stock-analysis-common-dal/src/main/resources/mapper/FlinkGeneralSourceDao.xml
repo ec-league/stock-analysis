@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sapphire.stock.analysis.common.dal.dao.FlinkGeneralSourceDao">
+    <resultMap id="flinkJobDo" type="com.sapphire.stock.analysis.common.dal.model.FlinkGeneralSourceDo">
+        <id property="id" column="ID" jdbcType="BIGINT"/>
+        <result property="schemaName" column="SCHEMA_NAME" jdbcType="VARCHAR"/>
+        <result property="tableName" column="TABLE_NAME" jdbcType="VARCHAR"/>
+        <result property="type" column="TYPE" jdbcType="VARCHAR"/>
+        <result property="sourceConfig" column="SOURCE_CONFIG" jdbcType="VARCHAR"/>
+        <result property="gmtCreate" column="GMT_CREATE" jdbcType="TIMESTAMP"/>
+        <result property="gmtModified" column="GMT_MODIFIED" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.sapphire.stock.analysis.common.dal.model.FlinkGeneralSourceDo">
+        INSERT INTO FLINK_GENERAL_SOURCE (SCHEMA_NAME, TABLE_NAME, TYPE, SOURCE_CONFIG, GMT_CREATE, GMT_MODIFIED)
+        VALUES (#{schemaName}, #{tableName}, #{type}, #{sourceConfig}, #{gmtCreate}, #{gmtModified})
+        <selectKey keyProperty="id" keyColumn="ID" resultType="java.lang.Long" order="AFTER"
+                   statementType="PREPARED">
+            SELECT last_insert_id() as id
+        </selectKey>
+    </insert>
+
+    <select id="selectAll" resultMap="flinkJobDo">
+        SELECT *
+        FROM FLINK_GENERAL_SOURCE
+    </select>
+
+    <select id="selectByType" resultMap="flinkJobDo">
+        SELECT *
+        FROM FLINK_GENERAL_SOURCE
+        WHERE TYPE = #{type}
+    </select>
+
+    <select id="selectById" resultMap="flinkJobDo">
+        SELECT *
+        FROM FLINK_GENERAL_SOURCE
+        WHERE ID = #{id}
+    </select>
+
+    <select id="findByName" resultMap="flinkJobDo">
+        SELECT *
+        FROM FLINK_GENERAL_SOURCE
+        WHERE TABLE_NAME = #{name}
+    </select>
+
+    <select id="findBySchemaAndTableName" resultMap="flinkJobDo">
+        SELECT *
+        FROM FLINK_GENERAL_SOURCE
+        WHERE SCHEMA_NAME = #{schemaName}
+          AND TABLE_NAME = #{tableName}
+    </select>
+
+    <update id="updateById" parameterType="com.sapphire.stock.analysis.common.dal.model.FlinkGeneralSourceDo">
+        UPDATE FLINK_GENERAL_SOURCE SET GMT_MODIFIED = CURRENT_TIMESTAMP
+        <if test="sourceConfig!=null and sourceConfig!='' ">
+            ,SOURCE_CONFIG = #{sourceConfig}
+        </if>
+        <if test="name!=null and name!='' ">
+            ,NAME = #{name}
+        </if>
+        WHERE ID = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE
+        FROM FLINK_GENERAL_SOURCE
+        WHERE ID = #{id}
+    </delete>
+</mapper>

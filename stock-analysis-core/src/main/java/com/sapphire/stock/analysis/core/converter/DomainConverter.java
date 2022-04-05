@@ -104,4 +104,31 @@ public class DomainConverter {
     }
 
 
+    public static FlinkGeneralSource toDomain(FlinkGeneralSourceDo dbEntity) {
+        if (dbEntity == null) {
+            return null;
+        }
+
+        FlinkGeneralSource domain = new FlinkGeneralSource();
+        domain.setId(dbEntity.getId());
+        domain.setTableName(dbEntity.getTableName());
+        domain.setSchemaName(dbEntity.getSchemaName());
+        domain.setType(dbEntity.getType());
+        switch (dbEntity.getType()) {
+            case "MYSQL":
+//                domain.setSourceConfig(
+//                        JsonUtils.fromJson(dbEntity.getSourceConfig(), MysqlSourceConfig.class));
+                break;
+            case "FILE":
+                domain.setSourceConfig(
+                        JsonUtils.fromJson(dbEntity.getSourceConfig(), FileSourceConfig.class));
+                break;
+            default:
+                throw new IllegalArgumentException(
+                        "Type not supported! type=" + dbEntity.getType());
+        }
+        domain.setGmtCreate(dbEntity.getGmtCreate());
+        domain.setGmtModified(dbEntity.getGmtModified());
+        return domain;
+    }
 }

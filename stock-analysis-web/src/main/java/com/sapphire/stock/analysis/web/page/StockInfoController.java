@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.sapphire.stock.analysis.core.model.StockInfo;
 import com.sapphire.stock.analysis.core.repo.StockInfoRepository;
-import com.sapphire.stock.analysis.web.dto.Response;
+import com.sapphire.stock.analysis.core.model.Response;
 
 /**
  * Author: 柏云鹏
