@@ -30,6 +30,19 @@ export default [
         icon: 'build',
         name: '数据分析',
         routes: [
+          {
+            path: '/stock-analysis/schedule-job-list',
+            name: '调度任务',
+            component: './FlinkJob/ScheduleJobList'
+          },
+          {
+            path: '/stock-analysis/schedule-job-add',
+            component: './FlinkJob/ScheduleAddJob',
+          },
+          {
+            path: '/stock-analysis/flink-console/:id',
+            component: './FlinkJob/FlinkConsoleHome'
+          },
         ]
       },
       {

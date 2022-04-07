@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sapphire.stock.analysis.core.repo.TaskSequenceFlowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,6 @@ import com.sapphire.stock.analysis.core.process.ProcessExecutor;
 import com.sapphire.stock.analysis.core.process.cache.ProcessConfigCache;
 import com.sapphire.stock.analysis.core.repo.FlinkScheduleJobRepository;
 import com.sapphire.stock.analysis.core.repo.FlinkSqlJobRepository;
-import com.sapphire.stock.analysis.core.model.Response;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,8 +43,11 @@ public class FlinkSchedulerJobController {
     @Autowired
     private FlinkSqlJobRepository      flinkSqlJobRepository;
 
+    @Autowired
+    private TaskSequenceFlowRepository taskSequenceFlowRepository;
+
     @GetMapping("/api/flink-schedule/job-list.json")
-    public Response<List<FlinkScheduleJob>> queryJobList(@RequestParam("tokenId") String tokenId) {
+    public Response<List<FlinkScheduleJob>> queryJobList() {
         try {
             List<FlinkScheduleJob> flinkScheduleJobs = flinkScheduleJobRepository.selectAll();
 
@@ -61,8 +64,7 @@ public class FlinkSchedulerJobController {
     }
 
     @GetMapping("/api/flink-job/schedule-job-detail.json")
-    public Response<FlinkScheduleJob> queryJobDetail(@RequestParam("tokenId") String tokenId,
-                                                     @RequestParam("scheduleJobId") String jobId) {
+    public Response<FlinkScheduleJob> queryJobDetail(@RequestParam("scheduleJobId") String jobId) {
         try {
             long id = Long.parseLong(jobId);
 
@@ -81,8 +83,7 @@ public class FlinkSchedulerJobController {
     }
 
     @PostMapping("/api/flink-schedule/new-schedule-job.json")
-    public Response<Long> newScheduleJob(@RequestParam("tokenId") String tokenId,
-                                         @RequestBody FlinkScheduleJob flinkScheduleJob) {
+    public Response<Long> newScheduleJob(@RequestBody FlinkScheduleJob flinkScheduleJob) {
         try {
             flinkScheduleJob.setStatus("F");
             flinkScheduleJob.setGmtCreate(new Date());
@@ -101,8 +102,7 @@ public class FlinkSchedulerJobController {
 
     @ResponseBody
     @PostMapping("/api/flink-job/update-schedule-sql-job.json")
-    public Response<Long> updateScheduleJob(@RequestParam("tokenId") String tokenId,
-                                            @RequestBody FlinkScheduleJob flinkScheduleJob) {
+    public Response<Long> updateScheduleJob(@RequestBody FlinkScheduleJob flinkScheduleJob) {
         try {
             flinkScheduleJob.setGmtModified(new Date());
             flinkScheduleJobRepository.save(flinkScheduleJob);
@@ -133,8 +133,7 @@ public class FlinkSchedulerJobController {
     }
 
     @PostMapping("/api/flink-schedule/submit-schedule-job.json")
-    public Response<Long> submitScheduleJob(@RequestParam("tokenId") String tokenId,
-                                            @RequestBody FlinkScheduleJob flinkScheduleJob) {
+    public Response<Long> submitScheduleJob(@RequestBody FlinkScheduleJob flinkScheduleJob) {
         try {
             if (flinkScheduleJob.getId() == 0L) {
                 log.warn("任务编辑不生效，调度任务尚未新增！");
@@ -189,6 +188,24 @@ public class FlinkSchedulerJobController {
             return response;
         } catch (Exception e) {
             log.error("submitScheduleJob exception", e);
+            return Response.errorResponse(ErrorCode.SYSTEM_ERROR.name(), "请稍后再试");
+        }
+    }
+
+    @GetMapping("/api/flink-schedule/execute-record.json")
+    public Response<List<TaskSequenceFlow>> queryExecuteRecord(@RequestParam("jobId") String jobId) {
+        try {
+
+            List<TaskSequenceFlow> taskSequenceFlowList = taskSequenceFlowRepository
+                    .selectParentBySchedulerJobId(Long.parseLong(jobId));
+
+            Response<List<TaskSequenceFlow>> response = new Response<>();
+            response.setSuccess(true);
+            response.setData(taskSequenceFlowList);
+
+            return response;
+        } catch (Exception e) {
+            log.error("queryExecuteRecord exception", e);
             return Response.errorResponse(ErrorCode.SYSTEM_ERROR.name(), "请稍后再试");
         }
     }
