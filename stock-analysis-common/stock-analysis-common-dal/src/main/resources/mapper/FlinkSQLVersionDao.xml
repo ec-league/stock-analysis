@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sapphire.stock.analysis.common.dal.dao.FlinkSQLVersionDao">
+    <resultMap id="flinkJobVersionDo" type="com.sapphire.stock.analysis.common.dal.model.FlinkSQLVersionDo">
+        <id property="id" column="ID" jdbcType="BIGINT"/>
+        <result property="sqlId" column="SQL_ID" jdbcType="BIGINT"/>
+        <result property="flinkConfig" column="FLINK_CONFIG" jdbcType="VARCHAR"/>
+        <result property="jobConfig" column="JOB_CONFIG" jdbcType="VARCHAR"/>
+        <result property="status" column="STATUS" jdbcType="VARCHAR"/>
+        <result property="extInfo" column="EXT_INFO" jdbcType="VARCHAR"/>
+        <result property="gmtCreate" column="GMT_CREATE" jdbcType="TIMESTAMP"/>
+        <result property="gmtModified" column="GMT_MODIFIED" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.sapphire.stock.analysis.common.dal.model.FlinkSQLVersionDo">
+        INSERT INTO FLINK_SQL_JOB_VERSION (SQL_ID, JOB_CONFIG, FLINK_CONFIG, STATUS, EXT_INFO, GMT_CREATE, GMT_MODIFIED)
+        VALUES (#{sqlId}, #{jobConfig}, #{flinkConfig}, #{status}, #{extInfo}, #{gmtCreate}, #{gmtModified})
+        <selectKey keyProperty="id" keyColumn="ID" resultType="java.lang.Long" order="AFTER"
+                   statementType="PREPARED">
+            SELECT last_insert_id() as id
+        </selectKey>
+    </insert>
+
+    <select id="selectSqlVersions" resultMap="flinkJobVersionDo">
+        SELECT * FROM FLINK_SQL_JOB_VERSION WHERE SQL_ID = #{sqlId}
+    </select>
+
+    <select id="selectById" resultMap="flinkJobVersionDo">
+        SELECT *
+        FROM FLINK_SQL_JOB_VERSION
+        WHERE ID = #{id}
+    </select>
+
+</mapper>

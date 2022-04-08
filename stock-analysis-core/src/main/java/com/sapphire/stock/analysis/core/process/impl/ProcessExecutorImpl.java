@@ -22,9 +22,6 @@ public class ProcessExecutorImpl implements ProcessExecutor {
     @Autowired
     private ApplicationContext  applicationContext;
 
-    public ProcessExecutorImpl() {
-    }
-
     public void execute(ProcessContext context) {
         if (log.isDebugEnabled()) {
             log.debug("[ProcessExecutor] start to process, context=" + context);

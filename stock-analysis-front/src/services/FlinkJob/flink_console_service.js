@@ -39,3 +39,71 @@ export async function executeOnce(payload) {
 export async function stopSingleTime(id) {
   return request(`/api/flink-job/invalid-singleTime-schedule-job.json?scheduleJobId=${id}`);
 }
+
+export async function submit(params) {
+  return request(`/api/flink-job/submit.json`, {
+    method: 'POST',
+    data: {
+      ...params
+    }
+  })
+}
+
+/**
+ * 查询的是文件与对应schema的全部信息, 访问速度较慢
+ * @returns {Promise<any>}
+ */
+export async function queryFileSourceList() {
+  return request(`/api/flink/file-source-list.json`)
+}
+
+export async function queryFlinkJobDetail(jobId) {
+  return request(`/api/flink/job-detail.json?jobId=${jobId}`)
+}
+
+export async function querySqlVersions(sqlId) {
+  return request(`/api/flink-sql-version/list.json?sqlId=${sqlId}`);
+}
+
+export async function versionRollback(versionId) {
+  return request(`/api/flink-sql-version/version-rollback.json?versionId=${versionId}`);
+}
+
+export async function executeRecord(params) {
+  return request('/api/data/execute-record.json', {
+    method: 'POST',
+    data: {
+      ...params
+    }
+  })
+}
+
+export async function formatSql(sql) {
+  return request('/api/data/format-sql.json', {
+    method: 'POST',
+    data: {
+      sqlText: sql
+    }
+  })
+}
+
+export async function querySchemasById(params) {
+  return request(`/api/data/query-schemas-by-id.json?id=${params}`)
+}
+
+export async function submitSql(params) {
+  return request('/api/data/submit-sql.json', {
+    method: 'POST',
+    data: {
+      ...params
+    }
+  })
+}
+
+export async function queryDataLinkList() {
+  return request(`/api/database/database-resource-list.json`, {
+    method: 'GET'
+  })
+}
+
+

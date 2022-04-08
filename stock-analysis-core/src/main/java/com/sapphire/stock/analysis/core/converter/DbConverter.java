@@ -102,4 +102,18 @@ public class DbConverter {
         dbEntity.setSourceConfig(JsonUtils.toJsonStr(flinkGeneralSource.getSourceConfig()));
         return dbEntity;
     }
+
+    public static FlinkSQLVersionDo toVersionEntity(FlinkSQLJob domain) {
+        FlinkSQLVersionDo dbEntity = new FlinkSQLVersionDo();
+
+        dbEntity.setSqlId(domain.getId());
+        dbEntity.setFlinkConfig(JsonUtils.toJsonStr(domain.getFlinkConfig()));
+        dbEntity.setJobConfig(JsonUtils.toJsonStr(domain.getJobConfig()));
+        dbEntity.setStatus(domain.getStatus());
+        dbEntity.setGmtCreate(domain.getGmtCreate() == null ? new Date() : domain.getGmtCreate());
+        dbEntity
+            .setGmtModified(domain.getGmtModified() == null ? new Date() : domain.getGmtModified());
+        dbEntity.setExtInfo(JsonUtils.toJsonStr(domain.getExtInfo()));
+        return dbEntity;
+    }
 }

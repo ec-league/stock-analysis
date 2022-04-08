@@ -229,9 +229,9 @@ class FlinkExecuteRecord extends PureComponent {
 
   render() {
     return (
-      <PageHeaderWrapper>
+      <div>
         {this.executeRecordlList()}
-      </PageHeaderWrapper>
+      </div>
     )
   }
 }

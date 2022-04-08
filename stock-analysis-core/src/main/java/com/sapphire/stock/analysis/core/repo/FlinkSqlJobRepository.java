@@ -106,7 +106,6 @@ public class FlinkSqlJobRepository {
             }
             sqlExecuteResult.setResultData(data);
             return sqlExecuteResult;
-
         } catch (FileNotFoundException e) {
             log.error("文件不存在，filePath={}", config.getPath());
             return new SqlExecuteResult();

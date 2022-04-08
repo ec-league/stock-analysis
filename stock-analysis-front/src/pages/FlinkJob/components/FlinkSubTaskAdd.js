@@ -251,10 +251,6 @@ class FlinkSubTaskAdd extends PureComponent {
             >
               <Option key="atomic">FlinkSQL</Option>
               <Option key="delete">原生SQL</Option>
-              <Option key="rcsVars">RcsVars</Option>
-              <Option key="ftp">FTP文件获取</Option>
-              <Option key="syncFile">文件内容追加</Option>
-              <Option key="blink">blink</Option>
               {/*<Option key="mysqlImportFile">新增表到文件</Option>*/}
             </Select>
           )}
@@ -411,23 +407,6 @@ class FlinkSubTaskAdd extends PureComponent {
           )}
         </Form.Item>
         }
-        <FormItem {...formItemLayout} label="条件执行">
-          {getFieldDecorator('executeFactor', {
-            rules: [
-              {
-                required: false,
-                message: '条件执行只针对满足特殊条件才能执行任务，默认无需选择'
-              }
-            ]
-          })(
-            <Select
-              placeholder="条件执行只针对满足特殊条件才能执行任务，默认无需选择"
-            >
-              <Option key="billDay">账单日执行</Option>
-              <Option key="monthEndDay">月末执行</Option>
-            </Select>
-          )}
-        </FormItem>
       </Fragment>
     )
   }
@@ -499,23 +478,6 @@ class FlinkSubTaskAdd extends PureComponent {
             ],
           })(<Input/>)}
         </Form.Item>
-        <FormItem {...formItemLayout} label="条件执行">
-          {getFieldDecorator('executeFactor', {
-            rules: [
-              {
-                required: false,
-                message: '条件执行只针对满足特殊条件才能执行任务，默认无需选择'
-              }
-            ]
-          })(
-            <Select
-              placeholder="条件执行只针对满足特殊条件才能执行任务，默认无需选择"
-            >
-              <Option key="billDay">账单日执行</Option>
-              <Option key="monthEndDay">月末执行</Option>
-            </Select>
-          )}
-        </FormItem>
       </Fragment>
     )
   }
@@ -545,23 +507,6 @@ class FlinkSubTaskAdd extends PureComponent {
             ],
           })(<Input/>)}
         </Form.Item>
-        <FormItem {...formItemLayout} label="条件执行">
-          {getFieldDecorator('executeFactor', {
-            rules: [
-              {
-                required: false,
-                message: '条件执行只针对满足特殊条件才能执行任务，默认无需选择'
-              }
-            ]
-          })(
-            <Select
-              placeholder="条件执行只针对满足特殊条件才能执行任务，默认无需选择"
-            >
-              <Option key="billDay">账单日执行</Option>
-              <Option key="monthEndDay">月末执行</Option>
-            </Select>
-          )}
-        </FormItem>
       </Fragment>
     )
   }

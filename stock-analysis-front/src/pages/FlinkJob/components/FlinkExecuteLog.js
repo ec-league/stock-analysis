@@ -21,7 +21,7 @@ class FlinkExecuteLog extends PureComponent {
       children.push(<Row key={i}><Text>{item}</Text></Row>)
     })
     return (
-      <PageHeaderWrapper>
+      <div>
         <Card
           title="执行过程日志"
           style={{ height: '360px' }}
@@ -29,7 +29,7 @@ class FlinkExecuteLog extends PureComponent {
         >
           {children}
         </Card>
-      </PageHeaderWrapper>
+      </div>
     )
   }
 }

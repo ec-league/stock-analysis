@@ -43,37 +43,37 @@ export default class FlinkConsoleHome extends PureComponent {
           onRefresh={()=>{
             this.initData()
           }}
-        ></FlinkTaskDetail>
+        />
         <Row gutter={16} style={{marginTop:'16px'}}>
-          <Col span={12}>
+          <Col span={18}>
             <FlinkExecuteArea
               onRefresh={()=>{
                 this.initData()
               }}
-            ></FlinkExecuteArea>
+            />
           </Col>
-          <Col span={12}>
+          <Col span={6}>
             <FlinkSubTaskList
               id={params.id}
               onRefresh={()=>{
                 this.initData()
               }}
-            ></FlinkSubTaskList>
+            />
           </Col>
         </Row>
         <Row gutter={16} style={{marginTop:'16px'}}>
           <Col span={12}>
-            <FlinkExecuteLog></FlinkExecuteLog>
+            <FlinkExecuteLog/>
           </Col>
           <Col span={12}>
-            <FlinkSourceSearch></FlinkSourceSearch>
+            <FlinkSourceSearch/>
           </Col>
         </Row>
         <Row style={{marginTop:'16px'}}>
-          <FlinkExecuteResult></FlinkExecuteResult>
+          <FlinkExecuteResult/>
         </Row>
         <Row style={{marginTop:'16px'}}>
-          <FlinkExecuteRecord id={params.id}></FlinkExecuteRecord>
+          <FlinkExecuteRecord id={params.id}/>
         </Row>
       </Fragment>
     );

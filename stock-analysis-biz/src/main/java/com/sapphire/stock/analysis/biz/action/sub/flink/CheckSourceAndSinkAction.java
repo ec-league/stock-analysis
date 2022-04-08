@@ -84,7 +84,8 @@ public class CheckSourceAndSinkAction implements BusinessAction {
                     flinkGeneralSourceRepository.save(sink);
                 }
 
-                entity.getFlinkSQLJob().getJobConfig().setSinkFileName(model.getTableName());
+                entity.getFlinkSQLJob().getJobConfig().setSinkSchemaName(sink.getSchemaName());
+                entity.getFlinkSQLJob().getJobConfig().setSinkTableName(sink.getTableName());
             }
         } else {
             throw new AthenaException("没有写入的表信息");

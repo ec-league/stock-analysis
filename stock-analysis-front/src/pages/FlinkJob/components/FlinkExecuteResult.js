@@ -70,11 +70,11 @@ class FlinkExecuteResult extends PureComponent {
     </Row>
     )
     return (
-      <PageHeaderWrapper type={'success'} extra={action}>
-        <Card title="执行结果">
+      <div>
+        <Card title="执行结果" extra={action}>
           {this.renderExecuteResult()}
         </Card>
-      </PageHeaderWrapper>
+      </div>
     )
   }
 }

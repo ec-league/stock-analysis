@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react'
-import PageHeaderWrapper from '@/components/PageHeaderWrapper'
 import { Button, Card, message, Modal, Table } from 'antd'
 import { connect } from 'dva'
 import 'codemirror/keymap/sublime'
@@ -210,8 +209,8 @@ class FlinkExecuteArea extends PureComponent {
       </span>
     )
     return (
-      <PageHeaderWrapper extra={action}>
-        <Card title="子任务内容" style={{ height: '500px' }}>
+      <div>
+        <Card title="子任务内容" style={{ height: '500px' }} extra={action}>
           <CodeMirror
             title="sql"
             options={options}
@@ -239,7 +238,7 @@ class FlinkExecuteArea extends PureComponent {
             </div>}
           />
         </Modal>
-      </PageHeaderWrapper>
+      </div>
     );
   }
 }

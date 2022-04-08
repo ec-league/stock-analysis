@@ -131,4 +131,19 @@ public class DomainConverter {
         domain.setGmtModified(dbEntity.getGmtModified());
         return domain;
     }
+
+    public static FlinkSQLVersion toDomain(FlinkSQLVersionDo dbEntity) {
+        FlinkSQLVersion domain = new FlinkSQLVersion();
+
+        domain.setId(dbEntity.getId());
+        domain.setSqlId(dbEntity.getSqlId());
+        domain.setFlinkConfig(JsonUtils.fromJson(dbEntity.getFlinkConfig(), FlinkConfig.class));
+        domain.setJobConfig(JsonUtils.fromJson(dbEntity.getJobConfig(), JobConfig.class));
+        domain.setStatus(dbEntity.getStatus());
+        domain.setGmtCreate(dbEntity.getGmtCreate());
+        domain.setGmtModified(dbEntity.getGmtModified());
+        domain.setExtInfo(dbEntity.getExtInfo());
+
+        return domain;
+    }
 }

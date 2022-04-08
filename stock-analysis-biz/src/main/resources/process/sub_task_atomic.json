@@ -12,8 +12,6 @@
         "findSourceAndSinkAction",
         "checkSourceAndSinkAction",
         "submitFlinkSqlAction",
-        // 提交一个异步任务
-        "submitAsyncTaskAction",
         "setSuccessAction"
       ]
     },

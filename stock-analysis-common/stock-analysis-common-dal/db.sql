@@ -137,3 +137,20 @@ create table if not exists stock_analysis.FLINK_GENERAL_SOURCE
     DEFAULT CHARSET = utf8mb4
     COMMENT 'Flink数据源表';
 
+
+create table if not exists stock_analysis.FLINK_SQL_JOB_VERSION
+(
+    ID           bigint auto_increment primary key,
+    SQL_ID       bigint        null,
+    JOB_CONFIG   mediumtext    null,
+    FLINK_CONFIG varchar(8092) null,
+    STATUS       varchar(16)   null,
+    EXT_INFO     varchar(1024) null,
+    GMT_CREATE   datetime      null,
+    GMT_MODIFIED datetime      null,
+    INDEX idx_sql_id (SQL_ID)
+)
+    ENGINE = innodb
+    DEFAULT CHARSET = utf8mb4
+    COMMENT 'Flink SQL 版本表';
+

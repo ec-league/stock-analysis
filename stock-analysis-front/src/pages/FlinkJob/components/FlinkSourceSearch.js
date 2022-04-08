@@ -54,7 +54,7 @@ class FlinkSourceSearch extends PureComponent {
   render() {
     const { console_state_manager:{ searchSource } } = this.props
     return (
-      <PageHeaderWrapper>
+      <div>
         <Card title="Flink源搜索结果" style={{height:'360px'}}>
           <div style={{ display: 'flex', marginBottom: 20}}>
             <Input onChange={ this.handleChange }/>
@@ -73,7 +73,7 @@ class FlinkSourceSearch extends PureComponent {
             rowKey={record=>record.id}
           />
         </Card>
-      </PageHeaderWrapper>
+      </div>
     )
   }
 }

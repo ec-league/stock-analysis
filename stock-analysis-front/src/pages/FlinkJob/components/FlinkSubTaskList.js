@@ -341,8 +341,8 @@ class FlinkSubTaskList extends PureComponent {
       </span>
     )
     return (
-      <PageHeaderWrapper extra={action}>
-        <Card title="子任务列表" style={{height: '500px'}}>
+      <div>
+        <Card title="子任务列表" style={{height: '500px'}} extra={action}>
           <Table
             size='small'
             scroll={{x: 550}}
@@ -402,8 +402,8 @@ class FlinkSubTaskList extends PureComponent {
               addVisible: false
             })
           }}
-        ></FlinkSubTaskAdd>
-      </PageHeaderWrapper>
+        />
+      </div>
     )
   }
 }
