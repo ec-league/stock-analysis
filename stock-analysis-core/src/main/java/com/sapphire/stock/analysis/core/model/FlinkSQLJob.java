@@ -5,9 +5,12 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
+import lombok.Data;
+
 /**
  * Author: 柏云鹏 Date: 2022/4/3.
  */
+@Data
 public class FlinkSQLJob {
     // FLINK SQL
     public static final String FLINK_SQL_JOB_TYPE_ATOMIC        = "atomic";
@@ -19,6 +22,7 @@ public class FlinkSQLJob {
     public static final String FLINK_FILE_TO_MYSQL              = "file2mysql";
 
     private long               id;
+    private long               scheduleJobId;
     private FlinkConfig        flinkConfig                      = new FlinkConfig();
     private long               taskSeqId;
     /**
@@ -29,88 +33,13 @@ public class FlinkSQLJob {
     private String             type                             = FLINK_SQL_JOB_TYPE_ATOMIC;
     private JobConfig          jobConfig                        = new JobConfig();
     private String             flinkJobId;
+    private int                priority;
     private String             name;
     private String             status;
     private String             resultMsg;
     private FlinkSqlExtInfo    extInfo                          = new FlinkSqlExtInfo();
     private Date               gmtCreate;
     private Date               gmtModified;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public FlinkConfig getFlinkConfig() {
-        return flinkConfig;
-    }
-
-    public void setFlinkConfig(FlinkConfig flinkConfig) {
-        this.flinkConfig = flinkConfig;
-    }
-
-    public JobConfig getJobConfig() {
-        return jobConfig;
-    }
-
-    public void setJobConfig(JobConfig jobConfig) {
-        this.jobConfig = jobConfig;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Date getGmtCreate() {
-        return gmtCreate;
-    }
-
-    public void setGmtCreate(Date gmtCreate) {
-        this.gmtCreate = gmtCreate;
-    }
-
-    public Date getGmtModified() {
-        return gmtModified;
-    }
-
-    public void setGmtModified(Date gmtModified) {
-        this.gmtModified = gmtModified;
-    }
-
-    public String getFlinkJobId() {
-        return flinkJobId;
-    }
-
-    public void setFlinkJobId(String flinkJobId) {
-        this.flinkJobId = flinkJobId;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getResultMsg() {
-        return resultMsg;
-    }
 
     public void setResultMsg(String resultMsg) {
         if (StringUtils.isEmpty(resultMsg)) {
@@ -122,22 +51,6 @@ public class FlinkSQLJob {
         } else {
             this.resultMsg = resultMsg;
         }
-    }
-
-    public long getTaskSeqId() {
-        return taskSeqId;
-    }
-
-    public void setTaskSeqId(long taskSeqId) {
-        this.taskSeqId = taskSeqId;
-    }
-
-    public FlinkSqlExtInfo getExtInfo() {
-        return extInfo;
-    }
-
-    public void setExtInfo(FlinkSqlExtInfo extInfo) {
-        this.extInfo = extInfo;
     }
 
     public void addReplaceParams(String key, String val) {

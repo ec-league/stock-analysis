@@ -5,6 +5,8 @@
     <resultMap id="flinkJobDo" type="com.sapphire.stock.analysis.common.dal.model.FlinkSQLJobDo">
         <id property="id" column="ID" jdbcType="BIGINT"/>
         <result property="name" column="NAME" jdbcType="VARCHAR"/>
+        <result property="scheduleJobId" column="SCHEDULE_JOB_ID" jdbcType="BIGINT"/>
+        <result property="priority" column="PRIORITY" jdbcType="INTEGER" />
         <result property="type" column="TYPE" jdbcType="VARCHAR"/>
         <result property="taskSeqId" column="TASK_SEQ_ID" jdbcType="BIGINT"/>
         <result property="flinkJobId" column="FLINK_JOB_ID" jdbcType="VARCHAR"/>
@@ -18,9 +20,11 @@
     </resultMap>
 
     <insert id="insert" parameterType="com.sapphire.stock.analysis.common.dal.model.FlinkSQLJobDo">
-        INSERT INTO FLINK_SQL_JOB (NAME, TYPE, TASK_SEQ_ID, FLINK_JOB_ID, JOB_CONFIG, FLINK_CONFIG, STATUS, RESULT_MSG,
+        INSERT INTO FLINK_SQL_JOB (NAME, SCHEDULE_JOB_ID, TYPE, TASK_SEQ_ID, FLINK_JOB_ID, JOB_CONFIG, FLINK_CONFIG,
+        STATUS, RESULT_MSG,
         EXT_INFO, GMT_CREATE, GMT_MODIFIED)
-        VALUES (#{name}, #{type}, #{taskSeqId}, #{flinkJobId}, #{jobConfig}, #{flinkConfig}, #{status}, #{resultMsg},
+        VALUES (#{name}, #{scheduleJobId}, #{type}, #{taskSeqId}, #{flinkJobId}, #{jobConfig}, #{flinkConfig},
+        #{status}, #{resultMsg},
         #{extInfo}, #{gmtCreate}, #{gmtModified})
         <selectKey keyProperty="id" keyColumn="ID" resultType="java.lang.Long" order="AFTER"
                    statementType="PREPARED">
@@ -37,14 +41,16 @@
             NAME         = #{name},
             TYPE         = #{type},
             JOB_CONFIG   = #{jobConfig},
-            FLINK_CONFIG   = #{flinkConfig},
+            FLINK_CONFIG = #{flinkConfig},
+            PRIORITY     = #{priority},
             EXT_INFO     = #{extInfo}
         WHERE ID = #{id}
     </update>
 
     <select id="selectAll" resultMap="flinkJobDo">
         SELECT *
-        FROM FLINK_SQL_JOB ORDER BY ID DESC
+        FROM FLINK_SQL_JOB
+        ORDER BY ID DESC
     </select>
 
     <select id="selectById" resultMap="flinkJobDo">
@@ -52,8 +58,14 @@
         FROM FLINK_SQL_JOB
         WHERE ID = #{id}
     </select>
+    <select id="selectByScheduleId" resultMap="flinkJobDo">
+        SELECT *
+        FROM FLINK_SQL_JOB
+        WHERE SCHEDULE_JOB_ID = #{id}
+        ORDER BY PRIORITY DESC
+    </select>
     <select id="selectByName" resultType="com.sapphire.stock.analysis.common.dal.model.FlinkSQLJobDo">
-         SELECT *
+        SELECT *
         FROM FLINK_SQL_JOB
         WHERE NAME = #{name}
     </select>

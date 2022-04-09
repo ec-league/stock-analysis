@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react'
-import PageHeaderWrapper from '@/components/PageHeaderWrapper'
 import { Card, Row, Typography } from 'antd'
 import { connect } from 'dva'
 

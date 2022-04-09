@@ -104,10 +104,8 @@ public class FlinkService {
         env = BatchTableEnvironment.create(execEnv, tableConfig);
 
         try {
-            Map<String, TableSource> tableSources = new HashMap<>();
             setBaseInfo(execEnv, request);
-            //            registerAllFunction(env, request);
-            registerSource(env, request, tableSources);
+            registerSource(env, request);
             List<String> sqls = request.getSqls();
             for (int i = 0; i < sqls.size(); i++) {
                 Table table = registerSql(env, sqls.get(i));
@@ -153,7 +151,6 @@ public class FlinkService {
             response.setResultMsg(e.getMessage());
 
             return response;
-        } finally {
         }
     }
 
@@ -185,8 +182,7 @@ public class FlinkService {
         execEnv.setRestartStrategy(RestartStrategies.noRestart());
     }
 
-    private void registerSource(BatchTableEnvironment env, SubmitFlinkRequest request,
-                                Map<String, TableSource> tableSources) {
+    private void registerSource(BatchTableEnvironment env, SubmitFlinkRequest request) {
         request.getSources().forEach(flinkGeneralSource -> {
             try {
                 CsvTableSource.Builder csvBuilder = CsvTableSource.builder();
@@ -200,8 +196,7 @@ public class FlinkService {
                 csvBuilder.path(sourceConfig.getPath());
                 csvBuilder.fieldDelimiter(sourceConfig.getFieldDelim());
                 TableSource tableSource = csvBuilder.build();
-                env.registerTableSource(flinkGeneralSource.getName(), tableSource);
-                tableSources.put(flinkGeneralSource.getName(), tableSource);
+                env.registerTableSource(flinkGeneralSource.getTableName(), tableSource);
                 log.info("register table, name:{}.{}, class:{}", flinkGeneralSource.getSchemaName(),
                     flinkGeneralSource.getTableName(), tableSource.getClass());
             } catch (Exception e) {
@@ -220,7 +215,7 @@ public class FlinkService {
             case "DOUBLE":
                 return DataTypes.DOUBLE();
             case "NUMBER":
-                return DataTypes.DECIMAL(38, 18);
+                return DataTypes.DOUBLE();
             default:
                 return DataTypes.STRING();
         }
@@ -239,7 +234,7 @@ public class FlinkService {
             } else if (logicalType instanceof DoubleType) {
                 return "DOUBLE";
             } else if (logicalType instanceof DecimalType) {
-                return "DECIMAL";
+                return "NUMBER";
             } else {
                 return "STRING";
             }
@@ -261,16 +256,8 @@ public class FlinkService {
 
         TypeInformation[] fieldTypes = tableSchema.getFieldTypes();
 
-        FlinkGeneralSource flinkGeneralSource = flinkGeneralSourceRepository
-            .findBySchemaAndTableName(sinkDescriptor.getSchemaName(),
-                sinkDescriptor.getTableName());
-
-        if (null == flinkGeneralSource) {
-            throw new RuntimeException("Not found tableName:" + sinkDescriptor.getName());
-        }
-
-        if (StringUtils.equals(flinkGeneralSource.getType(), "FILE")) {
-            FileSourceConfig sourceConfig = flinkGeneralSource.getSourceConfig();
+        if (StringUtils.equals(sinkDescriptor.getType(), "FILE")) {
+            FileSourceConfig sourceConfig = sinkDescriptor.getSourceConfig();
 
             List<Field> schema = new ArrayList<>();
 
@@ -283,10 +270,10 @@ public class FlinkService {
 
             sourceConfig.setSchema(schema);
 
-            flinkGeneralSourceRepository.save(flinkGeneralSource);
+            flinkGeneralSourceRepository.save(sinkDescriptor);
         }
 
-        String tableName = "Tmp" + sinkDescriptor.getName();
+        String tableName = "Tmp" + sinkDescriptor.getTableName();
 
         env.registerTableSink(tableName, fieldNames, fieldTypes, tableSink);
 

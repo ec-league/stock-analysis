@@ -1,20 +1,16 @@
 package com.sapphire.stock.analysis.core.repo;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
-import com.sapphire.stock.analysis.core.converter.DbConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import com.sapphire.stock.analysis.common.dal.dao.FlinkScheduleJobDao;
 import com.sapphire.stock.analysis.common.dal.model.FlinkScheduleJobDo;
+import com.sapphire.stock.analysis.core.converter.DbConverter;
 import com.sapphire.stock.analysis.core.converter.DomainConverter;
 import com.sapphire.stock.analysis.core.model.FlinkScheduleJob;
-import com.sapphire.stock.analysis.core.model.FlinkScheduleJobConfig;
-import com.sapphire.stock.analysis.core.model.FlinkSqlOrder;
 
 /**
  * Author: 柏云鹏 Date: 2022/4/3.
@@ -46,27 +42,8 @@ public class FlinkScheduleJobRepository {
             return null;
         }
 
-        FlinkScheduleJob flinkScheduleJob = DomainConverter.toDomain(flinkScheduleJobDo);
-
-        if (flinkScheduleJob == null) {
-            return null;
-        }
-
-        FlinkScheduleJobConfig extInfo = flinkScheduleJob.getExtInfo();
-        if (extInfo != null) {
-            List<FlinkSqlOrder> flinkSqlOrderList = extInfo.getFlinkSqlOrderList();
-            if (!CollectionUtils.isEmpty(flinkSqlOrderList)) {
-                flinkSqlOrderList.sort(new Comparator<FlinkSqlOrder>() {
-                    @Override
-                    public int compare(FlinkSqlOrder o1, FlinkSqlOrder o2) {
-                        return -Integer.compare(o1.getPriority(), o2.getPriority());
-                    }
-                });
-            }
-        }
-        return flinkScheduleJob;
+        return DomainConverter.toDomain(flinkScheduleJobDo);
     }
-
 
     public boolean save(FlinkScheduleJob job) {
         FlinkScheduleJobDo flinkScheduleJobDo = DbConverter.toDbEntity(job);
@@ -84,6 +61,5 @@ public class FlinkScheduleJobRepository {
     public boolean updateStatusSuccess(FlinkScheduleJob job) {
         return flinkScheduleJobDao.updateStatusEnable(job.getId()) > 0;
     }
-
 
 }

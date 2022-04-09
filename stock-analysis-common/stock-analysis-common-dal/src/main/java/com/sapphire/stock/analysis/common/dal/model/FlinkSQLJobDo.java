@@ -10,11 +10,13 @@ import lombok.Data;
 @Data
 public class FlinkSQLJobDo {
     private long   id;
+    private long   scheduleJobId;
     private String flinkConfig;
     private String jobConfig;
     private String flinkJobId;
     private String name;
     private long   taskSeqId;
+    private int    priority;
     private String type;
     private String resultMsg;
     private String extInfo;

@@ -45,20 +45,14 @@ export async function updateScheduleJobDetail(params) {
 }
 
 export async function updateBatchPriority(params) {
-  return request(`/api/flink-schedule/update-batch-job-priorty.json?id=${params.id}`, {
+  return request(`/api/flink-schedule/update-batch-job-priorty.json?id=${params.id}&priority=${params.priority}`, {
     method: 'POST',
-    data: {
-      ...params.job_child_list
-    }
   })
 }
 
 export async function removeFlinkSqlJobList(params) {
-  return request(`/api/flink-schedule/remove-sql-job.json`, {
+  return request(`/api/flink-schedule/remove-sql-job.json?id=${params.sqlJobId}`, {
     method: 'POST',
-    data: {
-      ...params
-    }
   })
 }
 

@@ -88,19 +88,22 @@ create table if not exists stock_analysis.FLINK_SCHEDULE_JOB
 
 create table if not exists stock_analysis.FLINK_SQL_JOB
 (
-    ID           bigint auto_increment primary key,
-    NAME         varchar(256)  null,
-    TYPE         varchar(128)  null,
-    TASK_SEQ_ID  bigint        null,
-    FLINK_JOB_ID varchar(128)  null,
-    JOB_CONFIG   mediumtext    null,
-    FLINK_CONFIG varchar(8092) null,
-    STATUS       varchar(16)   null,
-    RESULT_MSG   varchar(1024) null,
-    EXT_INFO     varchar(4096) null,
-    GMT_CREATE   datetime      null,
-    GMT_MODIFIED datetime      null,
-    index idx_flink_sql_job_task_seq_id (TASK_SEQ_ID)
+    ID              bigint auto_increment primary key,
+    SCHEDULE_JOB_ID bigint,
+    NAME            varchar(256)  null,
+    TYPE            varchar(128)  null,
+    TASK_SEQ_ID     bigint        null,
+    FLINK_JOB_ID    varchar(128)  null,
+    JOB_CONFIG      mediumtext    null,
+    FLINK_CONFIG    varchar(8092) null,
+    PRIORITY        int default 0,
+    STATUS          varchar(16)   null,
+    RESULT_MSG      varchar(1024) null,
+    EXT_INFO        varchar(4096) null,
+    GMT_CREATE      datetime      null,
+    GMT_MODIFIED    datetime      null,
+    index idx_flink_sql_job_task_seq_id (TASK_SEQ_ID),
+    index idx_schedule_job_id(SCHEDULE_JOB_ID)
 )
     ENGINE = innodb
     DEFAULT CHARSET = utf8mb4
@@ -110,12 +113,12 @@ create table if not exists stock_analysis.TASK_SEQUENCE_FLOW
 (
     ID               bigint auto_increment primary key,
     PARENT_ID        bigint        null,
+    SCHEDULER_JOB_ID bigint        null,
     TASK_FLOW_TYPE   varchar(64)   null,
     TASK_INFO        varchar(8192) null,
     STATUS           varchar(16)   null,
     GMT_CREATE       datetime      null,
     GMT_MODIFIED     datetime      null,
-    SCHEDULER_JOB_ID bigint        null,
     index idx_task_sequence_flow_parent_id (PARENT_ID)
 )
     ENGINE = innodb

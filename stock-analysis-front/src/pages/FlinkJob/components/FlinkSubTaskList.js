@@ -1,14 +1,12 @@
 import React, { PureComponent } from 'react'
-import PageHeaderWrapper from '@/components/PageHeaderWrapper'
-import { Button, Card, Form, Input, Modal, Popconfirm, Select, Table, Tooltip } from 'antd'
+import { Button, Card, Form, Input, Popconfirm, Select, Table, Tooltip } from 'antd'
 import { connect } from 'dva'
 import router from 'umi/router'
 import FlinkSubTaskAdd from './FlinkSubTaskAdd'
-import SuperSelect from 'antd-virtual-select'
 
 const EditableContext = React.createContext()
 
-const EditableRow = ({form, index, ...props}) => (
+const EditableRow = ({ form, index, ...props }) => (
   <EditableContext.Provider value={form}>
     <tr {...props} />
   </EditableContext.Provider>
@@ -27,7 +25,7 @@ class EditableCell extends React.Component {
 
   toggleEdit = () => {
     const editing = !this.state.editing
-    this.setState({editing}, () => {
+    this.setState({ editing }, () => {
       if (editing) {
         this.input.focus()
       }
@@ -35,22 +33,22 @@ class EditableCell extends React.Component {
   }
 
   save = e => {
-    const {record, handleSave} = this.props
+    const { record, handleSave } = this.props
     this.form.validateFields((error, values) => {
       if (error && error[e.currentTarget.id]) {
         return
       }
       this.toggleEdit()
-      handleSave({...record, ...values})
+      handleSave({ ...record, ...values })
     })
   }
 
   renderCell = form => {
     this.form = form
-    const {children, dataIndex, record, title} = this.props
-    const {editing} = this.state
+    const { children, dataIndex, record, title } = this.props
+    const { editing } = this.state
     return editing ? (
-      <Form.Item style={{margin: 0}}>
+      <Form.Item style={{ margin: 0 }}>
         {form.getFieldDecorator(dataIndex, {
           rules: [
             {
@@ -62,7 +60,7 @@ class EditableCell extends React.Component {
         })(this.getInput())}
       </Form.Item>
     ) : (
-      <div className="editable-cell-value-wrap" style={{paddingRight: 24}} onClick={e => {
+      <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={e => {
         e.stopPropagation()
         this.toggleEdit()
       }}>
@@ -71,7 +69,7 @@ class EditableCell extends React.Component {
     )
   }
 
-  render () {
+  render() {
     const {
       editable,
       dataIndex,
@@ -91,13 +89,13 @@ class EditableCell extends React.Component {
 let logClock
 
 //console_state_manager:本页面的状态管理 文件路径为FlickConsole/Models
-@connect(({schedule_job_detail, console_state_manager, flink_sql_job_detail}) => ({
+@connect(({ schedule_job_detail, console_state_manager, flink_sql_job_detail }) => ({
   schedule_job_detail,
   console_state_manager,
   flink_sql_job_detail
 }))
 class FlinkSubTaskList extends PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.columns = [
       {
@@ -118,16 +116,10 @@ class FlinkSubTaskList extends PureComponent {
         )
       },
       {
-        title:'任务类型',
+        title: '任务类型',
         dataIndex: 'type',
         width: 120,
       },
-      // {
-      //   title: '状态',
-      //   dataIndex: 'status',
-      //   width:100,
-      //   ellipsis:true,
-      // },
       {
         title: '优先级',
         dataIndex: 'priority',
@@ -139,7 +131,7 @@ class FlinkSubTaskList extends PureComponent {
         width: 140,
         render: (text, record) => (
           <span>
-            <Button type="primary" style={{marginRight: 8}} onClick={e => {
+            <Button type="primary" style={{ marginRight: 8 }} onClick={e => {
               e.stopPropagation()
               this.handleEdit(record.id)
             }}>
@@ -171,16 +163,15 @@ class FlinkSubTaskList extends PureComponent {
     }
   }
 
-  handleEdit (id) {
+  handleEdit(id) {
     router.push(`/risk-task/flink-task/sql-job-edit/${id}`)
   }
 
   handleSubTaskDelete = record => {
-    const {dispatch, id} = this.props
+    const { dispatch, id } = this.props
     dispatch({
       type: 'schedule_job_detail/subTaskSqlJobDelete',
       payload: {
-        scheduleJobId: id,
         sqlJobId: record.id
       }
     }).then(() => {
@@ -191,26 +182,26 @@ class FlinkSubTaskList extends PureComponent {
     const {
       dispatch,
       id,
-      schedule_job_detail: {job_child_list}
+      schedule_job_detail: { job_child_list }
     } = this.props
 
     const newData = job_child_list
     const index = newData.findIndex(item => row.id === item.id)
     const item = newData[index]
-    newData.splice(index, 1, {...item, ...row})
+    newData.splice(index, 1, { ...item, ...row })
 
     dispatch({
       type: 'schedule_job_detail/updatePriority',
       payload: {
-        job_child_list: newData,
-        id: id
+        id: row.id,
+        priority: row.priority
       }
     }).then(() => {
       this.props.onRefresh()
     })
   }
   handleConnectionOk = e => {
-    const {dispatch, id} = this.props
+    const { dispatch, id } = this.props
     dispatch({
       type: 'schedule_job_detail/subTaskSqlJobAdd',
       payload: {
@@ -226,7 +217,7 @@ class FlinkSubTaskList extends PureComponent {
     })
   }
 
-  refresh () {
+  refresh() {
     this.props.onRefresh()
   }
 
@@ -237,7 +228,7 @@ class FlinkSubTaskList extends PureComponent {
     })
   }
   handleClickRow = (record, index) => {
-    const {dispatch} = this.props
+    const { dispatch } = this.props
     if (record.type !== 'ftp' && record.type !== 'syncFile') {
       dispatch({
         type: 'console_state_manager/rowInfo',
@@ -263,8 +254,8 @@ class FlinkSubTaskList extends PureComponent {
     }
   }
 
-  executeOnce () {
-    const {dispatch, schedule_job_detail: {current_job}} = this.props
+  executeOnce() {
+    const { dispatch, schedule_job_detail: { current_job } } = this.props
     dispatch({
       type: 'console_state_manager/flinkExecuteOnce',
       payload: {
@@ -276,9 +267,9 @@ class FlinkSubTaskList extends PureComponent {
     })
   }
 
-  render () {
+  render() {
     const {
-      schedule_job_detail: {job_child_list, flink_sql_job_list, current_job},
+      schedule_job_detail: { job_child_list, flink_sql_job_list, current_job },
       id
     } = this.props
 
@@ -318,18 +309,7 @@ class FlinkSubTaskList extends PureComponent {
       <span>
         <Button
           type="primary"
-          style={{marginLeft: 8}}
-          onClick={() => {
-            this.setState({
-              visible: true
-            })
-          }}
-        >
-          关联
-        </Button>
-        <Button
-          type="primary"
-          style={{marginLeft: 8}}
+          style={{ marginLeft: 8 }}
           onClick={() => {
             this.setState({
               addVisible: true
@@ -342,10 +322,10 @@ class FlinkSubTaskList extends PureComponent {
     )
     return (
       <div>
-        <Card title="子任务列表" style={{height: '500px'}} extra={action}>
+        <Card title="子任务列表" style={{ height: '500px' }} extra={action}>
           <Table
             size='small'
-            scroll={{x: 550}}
+            scroll={{ x: 550 }}
             components={components}
             rowClassName={() => 'editable-row'}
             dataSource={job_child_list}
@@ -363,31 +343,6 @@ class FlinkSubTaskList extends PureComponent {
             }}
           />
         </Card>
-        <Modal
-          title="子任务信息"
-          visible={this.state.visible}
-          onOk={this.handleConnectionOk}
-          onCancel={this.handleConnectionCancel}
-        >
-          <SuperSelect
-            mode="multiple"
-            style={{width: '100%'}}
-            optionFilterProp="children"
-            onChange={value => {
-              let jobIds = []
-              if (value) {
-                value.forEach(val => {
-                  jobIds.push(val.split(':')[0])
-                })
-              }
-              this.setState({
-                jobIds: jobIds
-              })
-            }}
-          >
-            {optionList}
-          </SuperSelect>
-        </Modal>
         <FlinkSubTaskAdd
           visible={this.state.addVisible}
           id={id}

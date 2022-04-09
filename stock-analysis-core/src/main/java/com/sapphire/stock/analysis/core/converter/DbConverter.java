@@ -1,6 +1,7 @@
 package com.sapphire.stock.analysis.core.converter;
 
 import java.util.Date;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -58,6 +59,8 @@ public class DbConverter {
         FlinkSQLJobDo dbEntity = new FlinkSQLJobDo();
 
         dbEntity.setId(domain.getId());
+        dbEntity.setScheduleJobId(domain.getScheduleJobId());
+        dbEntity.setPriority(domain.getPriority());
         dbEntity.setFlinkConfig(JsonUtils.toJsonStr(domain.getFlinkConfig()));
         dbEntity.setJobConfig(JsonUtils.toJsonStr(domain.getJobConfig()));
         dbEntity.setName(domain.getName());
@@ -92,8 +95,8 @@ public class DbConverter {
     public static FlinkGeneralSourceDo toDbEntity(FlinkGeneralSource flinkGeneralSource) {
         FlinkGeneralSourceDo dbEntity = new FlinkGeneralSourceDo();
         dbEntity.setId(flinkGeneralSource.getId());
-        dbEntity.setTableName(flinkGeneralSource.getTableName());
-        dbEntity.setSchemaName(flinkGeneralSource.getSchemaName());
+        dbEntity.setTableName(flinkGeneralSource.getTableName().toUpperCase(Locale.ROOT));
+        dbEntity.setSchemaName(flinkGeneralSource.getSchemaName().toUpperCase(Locale.ROOT));
         dbEntity.setType(flinkGeneralSource.getType());
         dbEntity.setGmtCreate(flinkGeneralSource.getGmtCreate() == null ? new Date()
             : flinkGeneralSource.getGmtCreate());

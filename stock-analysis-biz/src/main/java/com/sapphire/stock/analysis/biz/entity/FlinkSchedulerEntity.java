@@ -1,12 +1,10 @@
 package com.sapphire.stock.analysis.biz.entity;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.sapphire.stock.analysis.biz.entity.aware.CreateTaskAware;
 import com.sapphire.stock.analysis.core.model.FlinkScheduleJob;
-import com.sapphire.stock.analysis.core.model.FlinkSqlOrder;
 import com.sapphire.stock.analysis.core.model.TaskSequenceFlow;
 
 import lombok.Data;
@@ -20,8 +18,6 @@ public class FlinkSchedulerEntity extends BaseEntity implements CreateTaskAware 
     private FlinkScheduleJob    flinkScheduleJob;
 
     private TaskSequenceFlow    lastSeq;
-
-    private List<FlinkSqlOrder> flinkSqlOrderList;
 
     private long                parentFlowId;
 

@@ -61,6 +61,18 @@ public class FlinkSqlJobRepository {
         return DomainConverter.toDomain(flinkSQLJobDo);
     }
 
+    public List<FlinkSQLJob> selectByScheduleJobId(long scheduleId) {
+        List<FlinkSQLJobDo> flinkSQLJobDos = flinkSQLJobDao.selectByScheduleId(scheduleId);
+
+        List<FlinkSQLJob> flinkSQLJobs = new ArrayList<>();
+
+        for (FlinkSQLJobDo flinkSQLJobDo : flinkSQLJobDos) {
+            flinkSQLJobs.add(DomainConverter.toDomain(flinkSQLJobDo));
+        }
+
+        return flinkSQLJobs;
+    }
+
     public SqlExecuteResult executeRecord(FileSourceConfig config) {
         List<File> fileList = new ArrayList<>();
         File sinkFile = new File(config.getPath()); // CSV文件路径
@@ -122,7 +134,7 @@ public class FlinkSqlJobRepository {
         return DomainConverter.toDomain(flinkSQLJobDo);
     }
 
-    public boolean deleteByPrimaryKey(Long id) {
+    public boolean deleteByName(Long id) {
         return flinkSQLJobDao.deleteByPrimaryKey(id) > 0;
     }
 }

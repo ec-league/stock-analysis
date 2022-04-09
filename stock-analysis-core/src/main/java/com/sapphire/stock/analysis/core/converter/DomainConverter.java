@@ -62,6 +62,8 @@ public class DomainConverter {
         FlinkSQLJob domain = new FlinkSQLJob();
 
         domain.setId(dbEntity.getId());
+        domain.setPriority(dbEntity.getPriority());
+        domain.setScheduleJobId(dbEntity.getScheduleJobId());
         domain.setFlinkConfig(JsonUtils.fromJson(dbEntity.getFlinkConfig(), FlinkConfig.class));
         if (StringUtils.isEmpty(dbEntity.getJobConfig())
             || dbEntity.getJobConfig().equals("null")) {

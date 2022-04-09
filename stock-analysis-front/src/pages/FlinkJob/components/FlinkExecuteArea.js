@@ -36,7 +36,7 @@ class FlinkExecuteArea extends PureComponent {
       payload: id
     }).then(res => {
       console.log(res, id)
-      if (res && res !== 'FINISH' && res !== 'FAILED') {
+      if (res && res !== 'FINISHED' && res !== 'FINISH' && res !== 'FAILED') {
         logClock = setTimeout(() => {
           this.onPolling(id)
         }, 1000)

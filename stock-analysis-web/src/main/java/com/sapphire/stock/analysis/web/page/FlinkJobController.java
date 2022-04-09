@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import com.sapphire.stock.analysis.biz.entity.SubTaskEntity;
@@ -79,19 +78,11 @@ public class FlinkJobController {
             FlinkScheduleJobConfig extInfo = flinkScheduleJob.getExtInfo();
             Response<List<FlinkSQLJob>> response = new Response<>();
 
-            if (extInfo == null || CollectionUtils.isEmpty(extInfo.getFlinkSqlOrderList())) {
+            if (extInfo == null) {
                 response.setSuccess(true);
                 return response;
             } else {
-                List<FlinkSqlOrder> flinkSqlOrderList = extInfo.getFlinkSqlOrderList();
-
-                List<FlinkSQLJob> flinkSQLJobs = new ArrayList<>(flinkSqlOrderList.size());
-
-                for (FlinkSqlOrder flinkSqlOrder : flinkSqlOrderList) {
-                    FlinkSQLJob flinkSQLJob = flinkSqlJobRepository
-                        .selectById(flinkSqlOrder.getFlinkSqlId());
-                    flinkSQLJobs.add(flinkSQLJob);
-                }
+                List<FlinkSQLJob> flinkSQLJobs = flinkSqlJobRepository.selectByScheduleJobId(id);
 
                 response.setSuccess(true);
                 response.setData(flinkSQLJobs);
@@ -111,28 +102,22 @@ public class FlinkJobController {
             if (StringUtils.isEmpty(scheduleId)) {
                 return Response.errorResponse("params_error", "参数有问题");
             }
+
+            long id = Long.parseLong(scheduleId);
             flinkSQLJob.setGmtCreate(new Date());
             flinkSQLJob.setGmtModified(new Date());
+            flinkSQLJob.setScheduleJobId(id);
             boolean success = flinkSqlJobRepository.save(flinkSQLJob);
 
             boolean successSaveVersion = flinkSqlVersionRepository.save(flinkSQLJob);
 
             if (success && successSaveVersion) {
                 FlinkScheduleJob flinkScheduleJob = flinkScheduleJobRepository
-                    .selectById(Long.parseLong(scheduleId));
-                List<FlinkSqlOrder> flinkSqlOrderList = new ArrayList<>();
+                    .selectById(id);
                 FlinkScheduleJobConfig extInfo = new FlinkScheduleJobConfig();
                 if (flinkScheduleJob.getExtInfo() != null) {
                     extInfo = flinkScheduleJob.getExtInfo();
-                    if (extInfo.getFlinkSqlOrderList() != null) {
-                        flinkSqlOrderList = extInfo.getFlinkSqlOrderList();
-                    }
                 }
-                FlinkSqlOrder flinkSqlOrder = new FlinkSqlOrder();
-                flinkSqlOrder.setFlinkSqlId(flinkSQLJob.getId());
-                flinkSqlOrder.setPriority(0);
-                flinkSqlOrderList.add(flinkSqlOrder);
-                extInfo.setFlinkSqlOrderList(flinkSqlOrderList);
                 flinkScheduleJob.setExtInfo(extInfo);
                 if (flinkScheduleJobRepository.save(flinkScheduleJob)) {
                     return Response.successResponse(flinkSQLJob.getId());
@@ -160,13 +145,18 @@ public class FlinkJobController {
                 return Response.errorResponse("FLINK_JOB_NOT_EXIST", "Flink SQL JOB不存在");
             }
 
-            if (!StringUtils.equals(flinkSQLJob.getType(), FlinkSQLJob.FLINK_SQL_JOB_TYPE_ATOMIC)) {
+            if (!StringUtils.equals(flinkSQLJob.getType(), FlinkSQLJob.FLINK_SQL_JOB_TYPE_ATOMIC)
+                && !StringUtils.equals(flinkSQLJob.getType(), FlinkSQLJob.FLINK_MYSQL_TO_FILE)) {
                 log.info("Not flinkSql: 不是flinkSql类型");
                 return Response.successResponse(new SqlExecuteResult());
             }
 
             String schemaName = flinkSQLJob.getJobConfig().getSinkSchemaName();
             String tableName = flinkSQLJob.getJobConfig().getSinkTableName();
+
+            if (StringUtils.isEmpty(tableName)) {
+                return Response.successResponse(new SqlExecuteResult());
+            }
 
             FlinkGeneralSource sink = flinkGeneralSourceRepository
                 .findBySchemaAndTableName(schemaName, tableName);

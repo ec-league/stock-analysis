@@ -45,6 +45,7 @@ public class CheckSourceAndSinkAction implements BusinessAction {
             FlinkGeneralSource source = flinkGeneralSourceRepository
                 .findBySchemaAndTableName(model.getSchemaName(), model.getTableName());
 
+            source.setTableName(model.getTableName());
             if (source != null) {
                 sourceMap.put(entry.getKey(), source);
             } else {
@@ -65,12 +66,10 @@ public class CheckSourceAndSinkAction implements BusinessAction {
                 FlinkGeneralSource sink = flinkGeneralSourceRepository
                     .findBySchemaAndTableName(model.getSchemaName(), model.getTableName());
 
-                if (sink != null) {
-                    sinkMap.put(entry.getKey(), sink);
-                } else {
+                if (sink == null) {
                     // create file and general source
                     sink = new FlinkGeneralSource();
-                    sink.setSchemaName(StringUtils.defaultString(model.getSchemaName(), "FILE"));
+                    sink.setSchemaName(StringUtils.defaultIfEmpty(model.getSchemaName(), "FILE"));
                     sink.setTableName(model.getTableName());
 
                     FileSourceConfig fileSourceConfig = new FileSourceConfig();
@@ -78,12 +77,14 @@ public class CheckSourceAndSinkAction implements BusinessAction {
                         PathUtils.append(prefix, sink.getSchemaName() + "." + sink.getTableName()));
 
                     sink.setType("FILE");
+                    sink.setTableName(model.getTableName());
                     sink.setSourceConfig(fileSourceConfig);
                     sink.setGmtModified(new Date());
                     sink.setGmtCreate(new Date());
                     flinkGeneralSourceRepository.save(sink);
                 }
 
+                sinkMap.put(entry.getKey(), sink);
                 entity.getFlinkSQLJob().getJobConfig().setSinkSchemaName(sink.getSchemaName());
                 entity.getFlinkSQLJob().getJobConfig().setSinkTableName(sink.getTableName());
             }

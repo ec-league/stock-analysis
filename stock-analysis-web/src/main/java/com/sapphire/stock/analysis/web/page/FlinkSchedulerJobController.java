@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sapphire.stock.analysis.core.repo.TaskSequenceFlowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +20,7 @@ import com.sapphire.stock.analysis.core.process.ProcessExecutor;
 import com.sapphire.stock.analysis.core.process.cache.ProcessConfigCache;
 import com.sapphire.stock.analysis.core.repo.FlinkScheduleJobRepository;
 import com.sapphire.stock.analysis.core.repo.FlinkSqlJobRepository;
+import com.sapphire.stock.analysis.core.repo.TaskSequenceFlowRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -107,13 +107,12 @@ public class FlinkSchedulerJobController {
             flinkScheduleJob.setGmtModified(new Date());
             flinkScheduleJobRepository.save(flinkScheduleJob);
 
+            List<FlinkSQLJob> flinkSQLJobs = flinkSqlJobRepository
+                .selectByScheduleJobId(flinkScheduleJob.getId());
             FlinkScheduleJobConfig extInfo = flinkScheduleJob.getExtInfo();
             if (extInfo != null) {
-                List<FlinkSqlOrder> flinkSqlOrderList = extInfo.getFlinkSqlOrderList();
-                if (!CollectionUtils.isEmpty(flinkSqlOrderList)) {
-                    for (FlinkSqlOrder flinkSqlOrder : flinkSqlOrderList) {
-                        FlinkSQLJob flinkSQLJob = flinkSqlJobRepository
-                            .selectById(flinkSqlOrder.getFlinkSqlId());
+                if (!CollectionUtils.isEmpty(flinkSQLJobs)) {
+                    for (FlinkSQLJob flinkSQLJob : flinkSQLJobs) {
                         FlinkConfig flinkConfig = flinkSQLJob.getFlinkConfig();
                         if (flinkScheduleJob.getExtInfo() != null) {
                             flinkConfig
@@ -125,7 +124,6 @@ public class FlinkSchedulerJobController {
             }
 
             return Response.successResponse(flinkScheduleJob.getId());
-
         } catch (Exception e) {
             log.error("update flinkSQLJob  failed!", e);
             return Response.errorResponse(e.getClass().getSimpleName(), e.getMessage());
@@ -159,8 +157,6 @@ public class FlinkSchedulerJobController {
 
             FlinkSchedulerEntity flinkSchedulerEntity = new FlinkSchedulerEntity();
             flinkSchedulerEntity.setFlinkScheduleJob(flinkScheduleJob);
-            flinkSchedulerEntity
-                .setFlinkSqlOrderList(flinkScheduleJob.getExtInfo().getFlinkSqlOrderList());
             String partitionDate = flinkScheduleJob.getExtInfo().getType().equals(
                 FlinkScheduleJobConfig.HISTORY_TYPE) ? flinkScheduleJob.getExtInfo().getStartDate()
                     : DateUtils.formatDate(new Date(), "yyyy-MM-dd");
@@ -192,12 +188,29 @@ public class FlinkSchedulerJobController {
         }
     }
 
+    @ResponseBody
+    @PostMapping("/api/flink-schedule/update-batch-job-priorty.json")
+    public Response<Long> updateSqlJobBatch(@RequestParam("id") long id,
+                                            @RequestParam int priority) {
+        try {
+            FlinkSQLJob flinkSQLJob = flinkSqlJobRepository.selectById(id);
+            flinkSQLJob.setPriority(priority);
+
+            flinkSqlJobRepository.save(flinkSQLJob);
+
+            return Response.successResponse(id);
+        } catch (Exception e) {
+            log.error("batch update flinkSQLJob priority failed!", e);
+            return Response.errorResponse(e.getClass().getSimpleName(), e.getMessage());
+        }
+    }
+
     @GetMapping("/api/flink-schedule/execute-record.json")
     public Response<List<TaskSequenceFlow>> queryExecuteRecord(@RequestParam("jobId") String jobId) {
         try {
 
             List<TaskSequenceFlow> taskSequenceFlowList = taskSequenceFlowRepository
-                    .selectParentBySchedulerJobId(Long.parseLong(jobId));
+                .selectParentBySchedulerJobId(Long.parseLong(jobId));
 
             Response<List<TaskSequenceFlow>> response = new Response<>();
             response.setSuccess(true);
@@ -209,4 +222,18 @@ public class FlinkSchedulerJobController {
             return Response.errorResponse(ErrorCode.SYSTEM_ERROR.name(), "请稍后再试");
         }
     }
+
+    @PostMapping("/api/flink-schedule/remove-sql-job.json")
+    public Response removeJobDetail(@RequestParam("id") Long id) {
+        try {
+            Response response = new Response();
+
+            response.setSuccess(flinkSqlJobRepository.deleteByName(id));
+            return response;
+        } catch (Exception e) {
+            log.error("removeJobDetail exception", e);
+            return Response.errorResponse(ErrorCode.SYSTEM_ERROR.name(), "请稍后再试");
+        }
+    }
+
 }

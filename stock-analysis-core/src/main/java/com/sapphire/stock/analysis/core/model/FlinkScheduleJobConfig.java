@@ -21,8 +21,6 @@ public class FlinkScheduleJobConfig {
 
     private String              partitionDate;
 
-    private List<FlinkSqlOrder> flinkSqlOrderList   = new ArrayList<>();
-
     private Map<String, String> replaceParams       = new HashMap<>();
 
     private Long                taskId;

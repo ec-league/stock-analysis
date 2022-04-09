@@ -3,14 +3,11 @@ package com.sapphire.stock.analysis.biz.action.sub.flink;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.calcite.config.Lex;
 import org.apache.calcite.sql.SqlInsert;
 import org.apache.calcite.sql.SqlKind;
 import org.apache.calcite.sql.SqlNode;
 import org.apache.calcite.sql.SqlNodeList;
 import org.apache.calcite.sql.parser.SqlParseException;
-import org.apache.calcite.sql.parser.SqlParser;
-import org.apache.flink.sql.parser.impl.FlinkSqlParserImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.sapphire.stock.analysis.biz.action.Action;
@@ -56,15 +53,10 @@ public class SubmitFlinkSqlAction implements BusinessAction {
 
         sqlSubmitFlinkRequest.setFlinkConfig(flinkSQLJob.getFlinkConfig());
         sqlSubmitFlinkRequest.setJobName(flinkSQLJob.getName());
-        List<String> sqls = new ArrayList<>();
         SqlNodeList sqlNodeList = entity.getSqlNodeList();
 
-        for (SqlNode sqlNode : sqlNodeList) {
-            sqls.add(sqlNode.toString());
-        }
-
         try {
-            sqlSubmitFlinkRequest.setSqls(findQuerySql(sqls));
+            sqlSubmitFlinkRequest.setSqls(findQuerySql(sqlNodeList));
         } catch (Exception e) {
             throw new AthenaException(ErrorCode.SQL_ERROR, e.getMessage());
         }
@@ -97,20 +89,17 @@ public class SubmitFlinkSqlAction implements BusinessAction {
         }
     }
 
-    public static List<String> findQuerySql(List<String> sqls) throws SqlParseException {
-        List<String> newSqls = new ArrayList<>(sqls.size());
-        SqlParser.Config CONFIG = SqlParser.configBuilder()
-            .setParserFactory(FlinkSqlParserImpl.FACTORY).setLex(Lex.MYSQL).build();
-        for (String sql : sqls) {
-            SqlParser sqlParser = SqlParser.create(sql, CONFIG);
-            SqlNode sqlNode = sqlParser.parseStmt();
+    public static List<String> findQuerySql(SqlNodeList sqlNodeList) throws SqlParseException {
+        List<String> newSqls = new ArrayList<>(sqlNodeList.size());
+        for (SqlNode sqlNode : sqlNodeList) {
             if (sqlNode.getKind() == SqlKind.INSERT) {
                 SqlInsert sqlInsert = (SqlInsert) sqlNode;
                 newSqls.add(sqlInsert.getSource().toString());
             } else if (sqlNode.getKind() == SqlKind.SELECT) {
                 newSqls.add(sqlNode.toString());
             } else {
-                throw new IllegalArgumentException("It must be an insert SQL, sql:" + sql);
+                throw new IllegalArgumentException(
+                    "It must be an insert SQL, sql:" + sqlNodeList.toString());
             }
         }
         return newSqls;

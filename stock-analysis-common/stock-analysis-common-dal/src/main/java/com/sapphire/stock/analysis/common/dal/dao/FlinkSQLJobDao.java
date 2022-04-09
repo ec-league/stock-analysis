@@ -1,6 +1,7 @@
 package com.sapphire.stock.analysis.common.dal.dao;
 
 import com.sapphire.stock.analysis.common.dal.model.FlinkSQLJobDo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -11,6 +12,8 @@ public interface FlinkSQLJobDao {
     int insert(FlinkSQLJobDo submitJobDo);
 
     List<FlinkSQLJobDo> selectAll();
+
+    List<FlinkSQLJobDo> selectByScheduleId(@Param("id") long id);
 
     FlinkSQLJobDo selectById(long id);
 

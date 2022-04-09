@@ -167,7 +167,6 @@ public class TaskSequenceFlowExecutor {
         FlinkScheduleJobConfig extInfo = flinkScheduleJob.getExtInfo();
         flinkSchedulerEntity.setFlinkScheduleJob(flinkScheduleJob);
         flinkSchedulerEntity.setLastSeq(parent);
-        flinkSchedulerEntity.setFlinkSqlOrderList(extInfo.getFlinkSqlOrderList());
         flinkSchedulerEntity.setPartitionDate(extInfo.getPartitionDate());
         flinkSchedulerEntity.setExtInfo(flinkScheduleJob.getExtInfo().getReplaceParams());
 
