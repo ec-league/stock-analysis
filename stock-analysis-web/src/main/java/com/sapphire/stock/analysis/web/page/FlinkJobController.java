@@ -10,6 +10,8 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import com.sapphire.stock.analysis.biz.entity.SubTaskEntity;
+import com.sapphire.stock.analysis.common.integration.client.FlinkClient;
+import com.sapphire.stock.analysis.common.integration.out.FlinkResponse;
 import com.sapphire.stock.analysis.core.exception.AthenaException;
 import com.sapphire.stock.analysis.core.model.*;
 import com.sapphire.stock.analysis.core.model.enums.FlinkSqlStatus;
@@ -46,6 +48,9 @@ public class FlinkJobController {
     private ProcessExecutor              processExecutor;
     @Autowired
     private ProcessConfigCache           processConfigCache;
+
+    @Autowired
+    private FlinkClient                  flinkClient;
 
     @GetMapping("/api/flink/job-list.json")
     public Response<List<FlinkSQLJob>> getAllJobs() {
@@ -218,6 +223,41 @@ public class FlinkJobController {
             return Response.errorResponse("SQL_EXECUTE_ERROR", e.getErrorMsg());
         } catch (Exception e) {
             log.error("submitSqlJob execute exception!", e);
+            return Response.errorResponse("SYS_ERROR", e.getMessage());
+        }
+    }
+
+    @GetMapping("/api/flink-job/execute-log.json")
+    public Response<String> executeLog(@RequestParam("sqlId") String sqlId) {
+        try {
+            long id = Long.parseLong(sqlId);
+
+            FlinkSQLJob flinkSQLJob = flinkSqlJobRepository.selectById(id);
+
+            if (flinkSQLJob == null) {
+                return Response.errorResponse("FLINK_JOB_NOT_EXIST", "Flink SQL JOB没有创建");
+            }
+
+            if (!StringUtils.equals(flinkSQLJob.getType(), FlinkSQLJob.FLINK_SQL_JOB_TYPE_ATOMIC)) {
+                return Response.successResponse(flinkSQLJob.getStatus());
+            }
+
+            String flinkJobId = flinkSQLJob.getFlinkJobId();
+
+            FlinkResponse flinkResponse = flinkClient.queryJobStatus(flinkJobId);
+
+            if (flinkResponse == null || !flinkResponse.isSuccess()) {
+                return Response.errorResponse("查询Flink状态失败!");
+            }
+            String status = flinkResponse.getContext().get("state");
+
+            if (StringUtils.equals("FINISHED", status) || StringUtils.equals("FAILED", status)) {
+                return Response.successResponse(status);
+            } else {
+                return Response.successResponse(flinkResponse.getContext().get("msg"));
+            }
+        } catch (Exception e) {
+            log.error("Query executeLog failed!", e);
             return Response.errorResponse("SYS_ERROR", e.getMessage());
         }
     }

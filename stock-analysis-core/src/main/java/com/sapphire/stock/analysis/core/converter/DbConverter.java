@@ -99,7 +99,12 @@ public class DbConverter {
             : flinkGeneralSource.getGmtCreate());
         dbEntity.setGmtModified(flinkGeneralSource.getGmtModified() == null ? new Date()
             : flinkGeneralSource.getGmtModified());
-        dbEntity.setSourceConfig(JsonUtils.toJsonStr(flinkGeneralSource.getSourceConfig()));
+        if (StringUtils.equals(flinkGeneralSource.getType(), "FILE")) {
+            dbEntity.setSourceConfig(JsonUtils.toJsonStr(flinkGeneralSource.getSourceConfig()));
+        } else if (StringUtils.equals(flinkGeneralSource.getType(), "MYSQL")) {
+            dbEntity
+                .setSourceConfig(JsonUtils.toJsonStr(flinkGeneralSource.getMysqlSourceConfig()));
+        }
         return dbEntity;
     }
 

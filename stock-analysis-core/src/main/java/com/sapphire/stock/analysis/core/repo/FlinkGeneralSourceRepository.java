@@ -2,10 +2,12 @@ package com.sapphire.stock.analysis.core.repo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.sapphire.stock.analysis.common.dal.dao.FlinkGeneralSourceDao;
 import com.sapphire.stock.analysis.common.dal.model.FlinkGeneralSourceDo;
@@ -24,9 +26,10 @@ public class FlinkGeneralSourceRepository {
 
     public FlinkGeneralSource findBySchemaAndTableName(String schemaName, String tableName) {
         if (StringUtils.isEmpty(schemaName)) {
-            List<FlinkGeneralSourceDo> byName = flinkGeneralSourceDao.findByName(tableName);
+            List<FlinkGeneralSourceDo> byName = flinkGeneralSourceDao
+                .findByName(tableName.toUpperCase(Locale.ROOT));
 
-            if (byName.size() == 0) {
+            if (CollectionUtils.isEmpty(byName)) {
                 // scan table
                 return null;
             }
@@ -37,7 +40,9 @@ public class FlinkGeneralSourceRepository {
                 return DomainConverter.toDomain(flinkGeneralSourceDo);
             }
         }
-        return null;
+        FlinkGeneralSourceDo dbEntity = flinkGeneralSourceDao
+            .findBySchemaAndTableName(schemaName, tableName);
+        return DomainConverter.toDomain(dbEntity);
     }
 
     public void save(FlinkGeneralSource flinkGeneralSource) {
@@ -48,8 +53,9 @@ public class FlinkGeneralSourceRepository {
             return;
         }
 
-        FlinkGeneralSourceDo bySchemaAndTableName = flinkGeneralSourceDao
-            .findBySchemaAndTableName(dbEntity.getSchemaName(), dbEntity.getTableName());
+        FlinkGeneralSourceDo bySchemaAndTableName = flinkGeneralSourceDao.findBySchemaAndTableName(
+            dbEntity.getSchemaName().toUpperCase(Locale.ROOT),
+            dbEntity.getTableName().toUpperCase(Locale.ROOT));
 
         if (bySchemaAndTableName != null) {
             dbEntity.setId(bySchemaAndTableName.getId());

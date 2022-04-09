@@ -251,6 +251,7 @@ class FlinkSubTaskAdd extends PureComponent {
             >
               <Option key="atomic">FlinkSQL</Option>
               <Option key="delete">原生SQL</Option>
+              <Option key={"mysql2file"}>表导文件</Option>
               {/*<Option key="mysqlImportFile">新增表到文件</Option>*/}
             </Select>
           )}

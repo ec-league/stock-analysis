@@ -14,13 +14,14 @@ import lombok.Data;
  */
 @Data
 public class FlinkGeneralSource {
-    private long             id;
-    private String           schemaName;
-    private String           tableName;
-    private String           type;
-    private FileSourceConfig sourceConfig;
-    private Date             gmtCreate;
-    private Date             gmtModified;
+    private long              id;
+    private String            schemaName;
+    private String            tableName;
+    private String            type;
+    private FileSourceConfig  sourceConfig;
+    private MysqlSourceConfig mysqlSourceConfig;
+    private Date              gmtCreate;
+    private Date              gmtModified;
 
     public String getName() {
         return this.schemaName + "." + this.tableName;

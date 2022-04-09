@@ -1,0 +1,27 @@
+{
+  "processStageMap": {
+    "PRE_PROCESS": {
+      "actions": [
+        "flinkTaskStartAction"
+      ]
+    },
+    "PROCESS": {
+      "actions": [
+        "replaceParamsAction",
+        "sqlParseAction",
+        "findSourceAndSinkAction",
+        "checkSourceAndSinkAction",
+        "fileTableSchemaAction",
+        "mysqlWriteFileAction",
+        "flinkTaskSuccessAction",
+        "setSuccessAction"
+      ]
+    },
+    "ERROR_PROCESS": {
+      "actions": [
+        "flinkTaskFailAction",
+        "commonErrorHandleAction"
+      ]
+    }
+  }
+}

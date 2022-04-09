@@ -15,14 +15,8 @@ public class FlinkSQLJob {
     public static final String FLINK_SQL_JOB_TYPE_COMPLEX       = "complex";
     // 原生SQL
     public static final String FLINK_SQL_JOB_TYPE_ATOMIC_DELETE = "delete";
-    public static final String FLINK_SQL_JOB_TYPE_AB_TABLE      = "abTable";
-    public static final String DATA_CLEAN_JOB_TYPE              = "dataClean";
-    public static final String FLINK_SQL_JOB_TYPE_SYNC_FILE     = "syncFile";
-    public static final String FLINK_SQL_JOB_RCS_VARS           = "rcsVars";
-    public static final String FLINK_SQL_JOB_TYPE_BLINK         = "blink";
     public static final String FLINK_MYSQL_TO_FILE              = "mysql2file";
     public static final String FLINK_FILE_TO_MYSQL              = "file2mysql";
-    public static final String MODEL_REGRESSION_TASK            = "modelregressiontask";
 
     private long               id;
     private FlinkConfig        flinkConfig                      = new FlinkConfig();

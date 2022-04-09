@@ -33,8 +33,6 @@ public class FlinkClient {
 
     private static final String QUERY_FREE_SLOT_URL     = "http://%s/overview";
 
-    private static final String FLINK_HOST              = "flinkHost";
-
     @Value("${flink.host:127.0.0.1:8081}")
     private String              flinkHost;
 
@@ -64,6 +62,16 @@ public class FlinkClient {
 
             Map<String, String> context = new HashMap<String, String>();
             context.put("state", state);
+            String created = jsonObject.getString("CREATED");
+            context.put("CREATED", created);
+            String running = jsonObject.getString("RUNNING");
+            context.put("RUNNING", running);
+            String failed = jsonObject.getString("FAILED");
+            context.put("FAILED", failed);
+            String finished = jsonObject.getString("FINISHED");
+            context.put("FINISHED", finished);
+            context.put("msg", String.format("CREATED:%s，RUNNING:%s，FAILED:%s，FINISHED:%s", created,
+                running, failed, finished));
             response.setContext(context);
 
             return response;

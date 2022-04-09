@@ -49,7 +49,7 @@ public class CheckSourceAndSinkAction implements BusinessAction {
                 sourceMap.put(entry.getKey(), source);
             } else {
                 // 查询本地表
-                throw new AthenaException("MYSQL还没有实现!");
+                throw new AthenaException("原始表找不到!");
             }
         }
 

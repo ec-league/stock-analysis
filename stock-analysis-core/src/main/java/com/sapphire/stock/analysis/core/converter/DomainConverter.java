@@ -113,8 +113,14 @@ public class DomainConverter {
         domain.setTableName(dbEntity.getTableName());
         domain.setSchemaName(dbEntity.getSchemaName());
         domain.setType(dbEntity.getType());
-        domain.setSourceConfig(
-            JsonUtils.fromJson(dbEntity.getSourceConfig(), FileSourceConfig.class));
+        if (StringUtils.equals("FILE", dbEntity.getType())) {
+            domain.setSourceConfig(
+                JsonUtils.fromJson(dbEntity.getSourceConfig(), FileSourceConfig.class));
+        } else if (StringUtils.equals("MYSQL", dbEntity.getType())) {
+            domain.setMysqlSourceConfig(
+                JsonUtils.fromJson(dbEntity.getSourceConfig(), MysqlSourceConfig.class));
+        }
+
         domain.setGmtCreate(dbEntity.getGmtCreate());
         domain.setGmtModified(dbEntity.getGmtModified());
         return domain;
