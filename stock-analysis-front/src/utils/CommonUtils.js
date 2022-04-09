@@ -41,3 +41,15 @@ export function timestampToTime(timestamp) {
 
 
 export const ERROR_MSG = '系统异常,请稍后再试!'
+
+export function isEmpty(obj) {
+  if (typeof obj == "undefined" || obj == null) {
+    return true;
+  } else if (Object.prototype.toString.call(obj) == '[object Array]' && obj.length < 1) {
+    return true
+  } else if (typeof obj == "string" && obj == "") {
+    return true
+  } else {
+    return false;
+  }
+}

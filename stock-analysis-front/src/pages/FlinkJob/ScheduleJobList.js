@@ -1,12 +1,10 @@
 import React, { PureComponent } from 'react'
 import PageHeaderWrapper from '@/components/PageHeaderWrapper'
-import { Button, Card, Icon, Input, Popconfirm, Table, Tabs } from 'antd'
+import { Button, Card, Icon, Input, Table, Tag } from 'antd'
 import { connect } from 'dva'
 import Link from 'umi/link'
 import { formatDate } from '@/utils/CommonUtils'
 import Highlighter from 'react-highlight-words'
-
-const { TabPane } = Tabs;
 
 @connect(({ schedule_job_list }) => ({
   schedule_job_list
@@ -101,8 +99,15 @@ export default class ScheduleJobList extends PureComponent {
         ...this.getColumnSearchProps('name'),
       },
       {
-        title: '归属人',
-        dataIndex: 'extInfo.ownerName',
+        title: '状态',
+        dataIndex: 'status',
+        render: (status) => {
+          if (status === 'T') {
+            return <Tag color={"#87d068"}>生效</Tag>
+          } else {
+            return <Tag color={"#f50"}>失效</Tag>
+          }
+        }
       },
       {
         title: '创建时间',
@@ -121,54 +126,15 @@ export default class ScheduleJobList extends PureComponent {
       {
         title: '操作',
         dataIndex: 'id',
-        render: (id, record) => {
+        render: (id) => {
           return (
             <span>
-              <a href={`/stock-analysis/flink-console/${id}`}>查看</a>|
-               <Popconfirm title="是否要删除？" onConfirm={() => {
-                 dispatch({
-                   type: 'schedule_job_list/delete',
-                   payload: id,
-                 }).then(resp => {
-                   if (resp.success) {
-                     dispatch({
-                       type: 'schedule_job_list/fetch'
-                     })
-                   }
-                 })
-               }}><a>删除</a></Popconfirm>|
-               <a href={"#"} onClick={() => {
-                 window.open(`/api/flink-job/schedule-job-export.json?scheduleJobId=${id}`);
-               }}>导出</a>|
-              <a href={`/risk-task/flow-schedule-task-detail/${record.graphId}`}>新版</a>
+              <a href={`/stock-analysis/flink-console/${id}`}>查看</a>
             </span>
           )
         }
       }
     ];
-
-    const tabPanes = [];
-    const enableTask = [];
-    const disableTask = [];
-    job_list.forEach(job => {
-      if (job.status === 'T') {
-        enableTask.push(job);
-      } else {
-        disableTask.push(job);
-      }
-    });
-
-    tabPanes.push(<TabPane tab="生效中" key="1">
-        <Card>
-          <Table columns={columns} dataSource={enableTask}/>
-        </Card>
-      </TabPane>
-    );
-    tabPanes.push(<TabPane tab="不生效" key="2">
-      <Card>
-        <Table columns={columns} dataSource={disableTask}/>
-      </Card>
-    </TabPane>);
 
     const extra = (
       <div>
@@ -181,9 +147,7 @@ export default class ScheduleJobList extends PureComponent {
     return (
       <PageHeaderWrapper title="调度任务列表" extra={extra}>
         <Card bordered={false}>
-          <Tabs type="card" onChange={this.onChange}>
-            {tabPanes}
-          </Tabs>
+          <Table columns={columns} dataSource={job_list}/>
         </Card>
       </PageHeaderWrapper>
     );

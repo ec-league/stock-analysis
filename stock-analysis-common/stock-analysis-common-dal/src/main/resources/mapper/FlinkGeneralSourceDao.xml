@@ -56,9 +56,6 @@
         <if test="sourceConfig!=null and sourceConfig!='' ">
             ,SOURCE_CONFIG = #{sourceConfig}
         </if>
-        <if test="name!=null and name!='' ">
-            ,NAME = #{name}
-        </if>
         WHERE ID = #{id}
     </update>
 

@@ -1,5 +1,6 @@
 package com.sapphire.stock.analysis.core.repo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -56,5 +57,23 @@ public class FlinkGeneralSourceRepository {
         } else {
             flinkGeneralSourceDao.insert(dbEntity);
         }
+    }
+
+    public List<FlinkGeneralSource> selectAll() {
+        List<FlinkGeneralSourceDo> flinkGeneralSourceDos = flinkGeneralSourceDao.selectAll();
+
+        List<FlinkGeneralSource> flinkGeneralSources = new ArrayList<>();
+
+        for (FlinkGeneralSourceDo flinkGeneralSourceDo : flinkGeneralSourceDos) {
+            flinkGeneralSources.add(DomainConverter.toDomain(flinkGeneralSourceDo));
+        }
+
+        return flinkGeneralSources;
+    }
+
+    public FlinkGeneralSource selectById(long id) {
+        FlinkGeneralSourceDo flinkGeneralSourceDo = flinkGeneralSourceDao.selectById(id);
+
+        return DomainConverter.toDomain(flinkGeneralSourceDo);
     }
 }

@@ -43,6 +43,15 @@ export default [
             path: '/stock-analysis/flink-console/:id',
             component: './FlinkJob/FlinkConsoleHome'
           },
+          {
+            path: '/stock-analysis/data-source-list',
+            name: '数据源管理',
+            component: './DataSource/GeneralSourceList'
+          },
+          {
+            path: '/stock-analysis/data-source-list/detail/:id',
+            component: './DataSource/GeneralSourceDetail'
+          }
         ]
       },
       {

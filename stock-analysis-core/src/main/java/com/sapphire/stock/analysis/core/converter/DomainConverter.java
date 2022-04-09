@@ -1,12 +1,12 @@
 package com.sapphire.stock.analysis.core.converter;
 
-import com.sapphire.stock.analysis.core.model.enums.FlinkSqlStatus;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 
 import com.sapphire.stock.analysis.common.dal.model.*;
 import com.sapphire.stock.analysis.common.util.JsonUtils;
 import com.sapphire.stock.analysis.core.model.*;
+import com.sapphire.stock.analysis.core.model.enums.FlinkSqlStatus;
 
 /**
  * Author: 柏云鹏
@@ -103,7 +103,6 @@ public class DomainConverter {
         return taskSequenceFlow;
     }
 
-
     public static FlinkGeneralSource toDomain(FlinkGeneralSourceDo dbEntity) {
         if (dbEntity == null) {
             return null;
@@ -114,19 +113,8 @@ public class DomainConverter {
         domain.setTableName(dbEntity.getTableName());
         domain.setSchemaName(dbEntity.getSchemaName());
         domain.setType(dbEntity.getType());
-        switch (dbEntity.getType()) {
-            case "MYSQL":
-//                domain.setSourceConfig(
-//                        JsonUtils.fromJson(dbEntity.getSourceConfig(), MysqlSourceConfig.class));
-                break;
-            case "FILE":
-                domain.setSourceConfig(
-                        JsonUtils.fromJson(dbEntity.getSourceConfig(), FileSourceConfig.class));
-                break;
-            default:
-                throw new IllegalArgumentException(
-                        "Type not supported! type=" + dbEntity.getType());
-        }
+        domain.setSourceConfig(
+            JsonUtils.fromJson(dbEntity.getSourceConfig(), FileSourceConfig.class));
         domain.setGmtCreate(dbEntity.getGmtCreate());
         domain.setGmtModified(dbEntity.getGmtModified());
         return domain;
