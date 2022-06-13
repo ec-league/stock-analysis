@@ -43,3 +43,7 @@ screenshot
 
 build
 tmp/
+stock-analysis-web/src/main/resources/static/
+
+stock-analysis-web.jar
+stock-analysis-web.tar.gz
