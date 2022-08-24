@@ -18,7 +18,7 @@ export async function newFlinkSqlJob(params) {
 }
 
 export async function updateFlinkSqlJob(params) {
-  return request(`/api/flink-job/update-sql-job.json`, {
+  return request(`/api/flink-job/update-schedule-sql-job.json`, {
     method: 'POST',
     data: {
       ...params
