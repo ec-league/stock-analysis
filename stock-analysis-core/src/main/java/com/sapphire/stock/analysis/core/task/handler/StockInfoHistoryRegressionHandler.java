@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import com.sapphire.stock.analysis.core.model.StockInfo;
+import com.sapphire.stock.analysis.core.repo.StockInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,9 @@ public class StockInfoHistoryRegressionHandler implements TaskHandler {
     @Autowired
     private StockDailyDigestRepository stockDailyDigestRepo;
 
+    @Autowired
+    private StockInfoRepository stockInfoRepository;
+
     @Override
     public void completeTask(Task task) {
         Map<String, String> extInfo = task.getExtInfo();
@@ -53,9 +58,22 @@ public class StockInfoHistoryRegressionHandler implements TaskHandler {
             List<StockDailyDigestDO> stockDailyDigestDOS = historyStockClient
                 .queryStockHistory(code, startDate, endDate);
 
+            String partitionDate = null;
+
             for (StockDailyDigestDO stockDailyDigestDO : stockDailyDigestDOS) {
                 StockDailyDigest domain = DomainConverter.toDomain(stockDailyDigestDO);
                 stockDailyDigestRepo.save(domain);
+                partitionDate = stockDailyDigestDO.getPartitionDate();
+            }
+
+            if (partitionDate != null) {
+                StockInfo stockInfo = stockInfoRepository.selectByCode(code);
+
+                if (stockInfo != null) {
+                    stockInfo.getExtInfo().put("partitionDate", partitionDate);
+                }
+
+                stockInfoRepository.save(stockInfo);
             }
 
             // 只回溯到当前

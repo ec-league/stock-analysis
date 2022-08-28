@@ -25,6 +25,7 @@ public class DomainConverter {
     public static StockInfo toDomain(StockInfoDo stockInfoDo) {
         StockInfo stockInfo = new StockInfo();
         BeanUtils.copyProperties(stockInfoDo, stockInfo);
+        stockInfo.setExtInfo(JsonUtils.toStringMap(stockInfoDo.getExtInfo()));
 
         return stockInfo;
     }

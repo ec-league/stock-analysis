@@ -43,4 +43,10 @@ public class StockInfoRepository {
             return stockInfoDao.updateByCode(dbEntity) > 0;
         }
     }
+
+    public StockInfo selectByCode(String code) {
+        StockInfoDo stockInfoDo = stockInfoDao.selectByCode(code);
+
+        return DomainConverter.toDomain(stockInfoDo);
+    }
 }

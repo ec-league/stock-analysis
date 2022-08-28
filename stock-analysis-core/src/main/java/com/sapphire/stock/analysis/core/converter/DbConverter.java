@@ -37,6 +37,7 @@ public class DbConverter {
     public static StockInfoDo toDbEntity(StockInfo stockInfo) {
         StockInfoDo stockInfoDo = new StockInfoDo();
         BeanUtils.copyProperties(stockInfo, stockInfoDo);
+        stockInfoDo.setExtInfo(JsonUtils.toJsonStr(stockInfo.getExtInfo()));
         return stockInfoDo;
     }
 

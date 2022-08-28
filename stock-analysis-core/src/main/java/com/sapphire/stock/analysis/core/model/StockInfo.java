@@ -1,6 +1,8 @@
 package com.sapphire.stock.analysis.core.model;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import lombok.Data;
 
@@ -11,6 +13,7 @@ import lombok.Data;
 public class StockInfo {
     private String stockCode;
     private String stockName;
+    private Map<String, String> extInfo = new HashMap<>();
 
     private Date   gmtCreate;
     private Date   gmtModified;

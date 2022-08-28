@@ -2,11 +2,15 @@ package com.sapphire.stock.analysis.common.integration.client;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import com.alibaba.fastjson.JSONArray;
+import com.sapphire.stock.analysis.common.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
 import com.alibaba.fastjson.JSON;
@@ -37,7 +41,9 @@ public class HistoryStockClient {
                                                       String endDate) {
         String key = stockHelper.getPrefix(code) + code;
 
-        String url = String.format(URL_PREFIX, key, startDate, endDate);
+        String startDateNew = DateUtils.plusDay(startDate);
+
+        String url = String.format(URL_PREFIX, key, startDateNew, endDate);
 
         ResponseEntity<String> forEntity = restTemplate.getForEntity(url, String.class);
 
@@ -50,7 +56,13 @@ public class HistoryStockClient {
         JSONObject jsonObject = JSON.parseObject(result);
 
 
-        List<List> array = jsonObject.getJSONObject("data").getJSONObject(key).getJSONArray("qfqday").toJavaList(List.class);
+        JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONObject(key).getJSONArray(
+                "qfqday");
+        if (CollectionUtils.isEmpty(jsonArray)) {
+            return Collections.emptyList();
+        }
+
+        List<List> array = jsonArray.toJavaList(List.class);
 
         List<StockDailyDigestDO> dos = new ArrayList<>(300);
 

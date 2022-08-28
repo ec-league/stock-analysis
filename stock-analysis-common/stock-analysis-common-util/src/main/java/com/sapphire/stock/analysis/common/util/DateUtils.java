@@ -2,6 +2,7 @@ package com.sapphire.stock.analysis.common.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -44,5 +45,19 @@ public class DateUtils {
             log.error("parseStringToDate exception!", e);
         }
         return date;
+    }
+
+    public static String plusDay(String partitionDate) {
+        try {
+            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(partitionDate);
+            Calendar instance = Calendar.getInstance();
+            instance.setTime(date);
+            instance.add(Calendar.DAY_OF_MONTH, 1);
+
+            return new SimpleDateFormat("yyyy-MM-dd").format(instance.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

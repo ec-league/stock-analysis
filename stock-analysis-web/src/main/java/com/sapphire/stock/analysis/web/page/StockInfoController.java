@@ -40,13 +40,16 @@ public class StockInfoController {
     public Response saveStockInfo(@RequestBody StockInfo stockInfo) {
         Response response = new Response();
 
+        if (!stockInfo.getExtInfo().containsKey("partitionDate")) {
+            stockInfo.getExtInfo().put("partitionDate", "2000-01-01");
+        }
         response.setSuccess(stockInfoRepository.save(stockInfo));
 
         return response;
     }
 
     @PostMapping("/start-regression.json")
-    public Response startRegression(@RequestParam String code) {
+    public Response startRegression(@RequestParam("code") String code) {
         stockRegressionService.startStockInfoRegression(code);
 
         Response response = new Response();

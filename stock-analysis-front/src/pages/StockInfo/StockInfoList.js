@@ -102,6 +102,7 @@ export default class StockInfoList extends PureComponent {
 
     const {
       stock_info: { stock_info_list },
+      dispatch
     } = this.props;
 
     const columns = [
@@ -118,12 +119,23 @@ export default class StockInfoList extends PureComponent {
         dataIndex: 'gmtModified'
       },
       {
+        title: '当前切片',
+        dataIndex: 'extInfo.partitionDate'
+      },
+      {
         title: '操作',
         dataIndex: 'stockCode',
         key: 'operation',
         render: (text, record) => (
           <span>
             <a href="#" onClick={() => this.setState({ record: record, visible: true, })}>修改</a>
+            |
+            <a href="#" onClick={() => {
+              dispatch({
+                type: 'stock_info/startRegression',
+                payload: text
+              })
+            }}>历史刷数</a>
           </span>),
       }
     ];

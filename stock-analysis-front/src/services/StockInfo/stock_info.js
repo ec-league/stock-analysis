@@ -11,3 +11,9 @@ export async function saveStockInfo(params) {
     data: params
   })
 }
+
+export async function startRegression(params) {
+  return request("/api/stock-info/start-regression.json?code=" + params, {
+    method: 'POST'
+  });
+}
