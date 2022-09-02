@@ -52,8 +52,6 @@ public class TaskConsumer {
 
             // 4. 任务处理完成, 落库 RETRY状态或者FAIL状态
             taskHandler.completeTask(task);
-            task.setStatus(TaskStatus.SUCCESS.name());
-            taskRepository.save(task);
         } catch (TaskExecuteException e) {
             log.error("");
             if (e.isNeedRetry() && task.getRetryTimes() < 3) {

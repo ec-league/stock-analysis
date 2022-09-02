@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import com.sapphire.stock.analysis.core.constant.TaskStatus;
 import com.sapphire.stock.analysis.core.model.StockInfo;
 import com.sapphire.stock.analysis.core.repo.StockInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,6 +84,9 @@ public class StockInfoHistoryRegressionHandler implements TaskHandler {
 
             // 创建下一次的任务
             createNextTask(code, endDate);
+
+            task.setStatus(TaskStatus.SUCCESS.name());
+            taskRepository.save(task);
         } catch (ParseException pe) {
             log.error("任务执行异常! 时间解析异常", pe);
             throw new TaskExecuteException(false, pe.getMessage());

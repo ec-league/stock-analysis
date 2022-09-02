@@ -13,14 +13,17 @@ import org.springframework.web.bind.annotation.*;
 import com.sapphire.stock.analysis.biz.entity.FlinkSchedulerEntity;
 import com.sapphire.stock.analysis.common.util.DateUtils;
 import com.sapphire.stock.analysis.common.util.exception.ErrorCode;
+import com.sapphire.stock.analysis.core.constant.TaskStatus;
 import com.sapphire.stock.analysis.core.exception.AthenaException;
 import com.sapphire.stock.analysis.core.model.*;
+import com.sapphire.stock.analysis.core.model.enums.TaskSequenceFlowStatus;
 import com.sapphire.stock.analysis.core.process.ProcessConfig;
 import com.sapphire.stock.analysis.core.process.ProcessContext;
 import com.sapphire.stock.analysis.core.process.ProcessExecutor;
 import com.sapphire.stock.analysis.core.process.cache.ProcessConfigCache;
 import com.sapphire.stock.analysis.core.repo.FlinkScheduleJobRepository;
 import com.sapphire.stock.analysis.core.repo.FlinkSqlJobRepository;
+import com.sapphire.stock.analysis.core.repo.TaskRepository;
 import com.sapphire.stock.analysis.core.repo.TaskSequenceFlowRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +49,9 @@ public class FlinkSchedulerJobController {
 
     @Autowired
     private TaskSequenceFlowRepository taskSequenceFlowRepository;
+
+    @Autowired
+    private TaskRepository             taskRepository;
 
     @GetMapping("/api/flink-schedule/job-list.json")
     public Response<List<FlinkScheduleJob>> queryJobList() {
@@ -257,13 +263,13 @@ public class FlinkSchedulerJobController {
             String partitionDate = DateUtils.formatDate(new Date(), "yyyy-MM-dd");
             if (!StringUtils.isEmpty(flinkScheduleJob.getExtInfo().getType())) {
                 if (flinkScheduleJob.getExtInfo().getType()
-                        .equals(FlinkScheduleJobConfig.HISTORY_TYPE))
+                    .equals(FlinkScheduleJobConfig.HISTORY_TYPE))
                     partitionDate = flinkScheduleJob.getExtInfo().getStartDate();
             }
             Map<String, String> extInfo = new HashMap<>(
-                    flinkScheduleJob.getExtInfo().getReplaceParams() != null
-                            ? flinkScheduleJob.getExtInfo().getReplaceParams()
-                            : new HashMap<>());
+                flinkScheduleJob.getExtInfo().getReplaceParams() != null
+                    ? flinkScheduleJob.getExtInfo().getReplaceParams()
+                    : new HashMap<>());
             extInfo.put("partitionDate", partitionDate);
             flinkSchedulerEntity.setExtInfo(extInfo);
             flinkScheduleJob.getExtInfo().setPartitionDate(partitionDate);
@@ -292,7 +298,7 @@ public class FlinkSchedulerJobController {
         try {
 
             List<TaskSequenceFlow> taskSequenceFlowList = taskSequenceFlowRepository
-                    .selectByParentId(Long.parseLong(parentId));
+                .selectByParentId(Long.parseLong(parentId));
 
             Response<List<TaskSequenceFlow>> response = new Response<>();
             response.setSuccess(true);
@@ -302,6 +308,36 @@ public class FlinkSchedulerJobController {
         } catch (Exception e) {
             log.error("querySonFlow exception", e);
             return Response.errorResponse(ErrorCode.SYSTEM_ERROR.name(), "请稍后再试");
+        }
+    }
+
+    @ResponseBody
+    @PostMapping("/api/flink-schedule/restart-task-sequence-flow.json")
+    public Response<Long> restartTaskSequenceFlow(@RequestBody Map<String, String> params) {
+        try {
+            String taskSequenceFlowId = params.get("taskSequenceFlowId");
+            String schedulerId = params.get("schedulerId");
+            if (schedulerId.isEmpty() || taskSequenceFlowId.isEmpty()) {
+                return Response.errorResponse("参数有误");
+            }
+            TaskSequenceFlow taskSequenceFlow = taskSequenceFlowRepository
+                .selectById(Long.parseLong(taskSequenceFlowId));
+            taskSequenceFlow.setStatus(TaskSequenceFlowStatus.RETRY.name());
+            taskSequenceFlowRepository.updateFlow(taskSequenceFlow);
+
+            FlinkScheduleJob flinkScheduleJob = flinkScheduleJobRepository
+                .selectById(Long.parseLong(schedulerId));
+            FlinkScheduleJobConfig extInfo = flinkScheduleJob.getExtInfo();
+            Long taskId = extInfo.getTaskId();
+            Task task = taskRepository.selectTaskById(taskId);
+            task.setRetryTimes(0);
+            task.setStatus(TaskStatus.RETRY.name());
+            taskRepository.save(task);
+
+            return Response.successResponse(schedulerId);
+        } catch (Exception e) {
+            log.error("restart TaskSequenceFlow failed!", e);
+            return Response.errorResponse(e.getClass().getSimpleName(), e.getMessage());
         }
     }
 }
