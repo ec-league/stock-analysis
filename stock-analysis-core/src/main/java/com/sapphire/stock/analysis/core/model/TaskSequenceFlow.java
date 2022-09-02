@@ -82,4 +82,12 @@ public class TaskSequenceFlow {
 
         return this.taskInfo.get("ERROR_MSG");
     }
+
+    public void setAsyncTaskId(long taskId) {
+        if (this.taskInfo == null) {
+            this.taskInfo = new HashMap<>();
+        }
+
+        this.taskInfo.put("asyncTaskId", String.valueOf(taskId));
+    }
 }

@@ -12,6 +12,7 @@
         "findSourceAndSinkAction",
         "checkSourceAndSinkAction",
         "submitFlinkSqlAction",
+        "submitAsyncTaskAction",
         "setSuccessAction"
       ]
     },

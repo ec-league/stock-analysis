@@ -46,7 +46,7 @@ public class InitSubTaskState implements SubTaskState {
     protected TaskSequenceFlowRepository taskSequenceFlowRepository;
 
     @Autowired
-    private AsyncTaskRepository          asyncTaskRepository;
+    protected AsyncTaskRepository          asyncTaskRepository;
 
     @Override
     public void handle(SubTaskContext context) {

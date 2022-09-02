@@ -1,5 +1,8 @@
 package com.sapphire.stock.analysis.biz.sub.state.flink;
 
+import com.sapphire.stock.analysis.biz.sub.state.SubTaskStatus;
+import com.sapphire.stock.analysis.core.model.AsyncTask;
+import com.sapphire.stock.analysis.core.repo.AsyncTaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,7 @@ import com.sapphire.stock.analysis.core.process.cache.ProcessConfigCache;
  */
 @Service
 public class FlinkSqlInitSubTaskState extends InitSubTaskState {
+
     private ProcessConfigCache processConfigCache;
 
     private ProcessExecutor    processExecutor;
@@ -42,20 +46,25 @@ public class FlinkSqlInitSubTaskState extends InitSubTaskState {
         context.setErrorMsg(processContext.getErrorMsg());
 
         if (entity.isSuccess()) {
+            AsyncTask asyncTask = context.getAsyncTask();
+            asyncTask.getProcessInfo().getInfos().add("已经提交FLINK执行!");
+
+            asyncTaskRepository.save(asyncTask);
+
             context.setCurrentState(subTaskStateFactory.getByTaskTypeAndStatus(subTaskType(),
-                TaskSequenceFlowStatus.PROCESSING.name()));
+                    SubTaskStatus.SUBMIT.name()));
         } else {
             String errorCode = processContext.getErrorCode();
 
             switch (errorCode) {
                 case "CREATE_FIRE_TASK_ERROR":
                 case "FLINK_NOT_AVAILABLE":
-                    context.setCurrentState(subTaskStateFactory.getByTaskTypeAndStatus(
-                        subTaskType(), TaskSequenceFlowStatus.RETRY.name()));
+                    context.setCurrentState(subTaskStateFactory
+                            .getByTaskTypeAndStatus(subTaskType(), SubTaskStatus.RETRY.name()));
                     return;
                 default:
                     context.setCurrentState(subTaskStateFactory
-                        .getByTaskTypeAndStatus(subTaskType(), TaskSequenceFlowStatus.FAIL.name()));
+                            .getByTaskTypeAndStatus(subTaskType(), SubTaskStatus.FAIL.name()));
             }
         }
     }
@@ -73,5 +82,10 @@ public class FlinkSqlInitSubTaskState extends InitSubTaskState {
     @Autowired
     public void setProcessExecutor(ProcessExecutor processExecutor) {
         this.processExecutor = processExecutor;
+    }
+
+    @Autowired
+    public void setAsyncTaskRepository(AsyncTaskRepository asyncTaskRepository) {
+        this.asyncTaskRepository = asyncTaskRepository;
     }
 }
