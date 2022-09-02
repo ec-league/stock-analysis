@@ -36,11 +36,15 @@ class FlinkExecuteRecord extends PureComponent {
         dataIndex: 'id'
       },
       {
+        title: 'JOB-NAME',
+        dataIndex: 'taskInfo.jobName'
+      },
+      {
         title: '状态',
         dataIndex: 'status'
       },
       {
-        title: 'taskInfo',
+        title: 'JOB-ID',
         dataIndex: 'taskInfo.FLINK_SQL_JOB_ID',
         render: (x, record) => {
           return (
@@ -50,7 +54,7 @@ class FlinkExecuteRecord extends PureComponent {
         }
       },
       {
-        title: '使用时间',
+        title: '执行时间',
         dataIndex: 'cost',
         render: (cost) => {
           if (!cost || cost === -1) {
@@ -111,8 +115,6 @@ class FlinkExecuteRecord extends PureComponent {
               >
                 重新执行
               </a>
-              |
-              <a href={`/risk-task/flink-task/sql-job-edit/${record.taskInfo.FLINK_SQL_JOB_ID}`}>编辑</a>
             </span>
           )
         }
@@ -149,13 +151,6 @@ class FlinkExecuteRecord extends PureComponent {
       {
         title: '状态',
         dataIndex: 'status'
-      },
-      {
-        title: '创建时间',
-        dataIndex: 'gmtCreate',
-        render: time => {
-          return formatDate(time)
-        }
       },
       {
         title: '更新时间',

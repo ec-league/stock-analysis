@@ -28,6 +28,10 @@ public class DateUtils {
         return dateFormat.format(date);
     }
 
+    public static String getYesterday() {
+        return new SimpleDateFormat("yyyy-MM-dd").format(new Date()); 
+    }
+    
     /**
      * String类型装成Date
      * @param dateString
@@ -60,4 +64,18 @@ public class DateUtils {
             return null;
         }
     }
+
+    public static String plusDay(String partitionDate, int count) {
+        try {
+            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(partitionDate);
+            Calendar instance = Calendar.getInstance();
+            instance.setTime(date);
+            instance.add(Calendar.DAY_OF_MONTH, count);
+
+            return new SimpleDateFormat("yyyy-MM-dd").format(instance.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    } 
 }

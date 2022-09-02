@@ -131,12 +131,6 @@ class FlinkSubTaskList extends PureComponent {
         width: 140,
         render: (text, record) => (
           <span>
-            <Button type="primary" style={{ marginRight: 8 }} onClick={e => {
-              e.stopPropagation()
-              this.handleEdit(record.id)
-            }}>
-              详情
-            </Button>
             <Popconfirm title="确认删除?"
                         onConfirm={e => {
                           e.stopPropagation()

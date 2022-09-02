@@ -46,15 +46,12 @@ export default class FlinkConsoleHome extends PureComponent {
           }}
         />
         <Row gutter={16} style={{ marginTop: '16px' }}>
-          <FlinkExecuteArea
+          <Col span={12}>
+            <FlinkExecuteArea
             onRefresh={() => {
               this.initData()
             }}
-          />
-        </Row>
-        <Row gutter={16} style={{ marginTop: '16px' }}>
-          <Col span={12}>
-            <FlinkExecuteLog/>
+            />
           </Col>
           <Col span={12}>
             <FlinkSubTaskList

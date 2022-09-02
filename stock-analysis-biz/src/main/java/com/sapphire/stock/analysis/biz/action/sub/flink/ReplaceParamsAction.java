@@ -3,6 +3,7 @@ package com.sapphire.stock.analysis.biz.action.sub.flink;
 import com.alibaba.druid.util.StringUtils;
 import com.sapphire.stock.analysis.biz.action.Action;
 import com.sapphire.stock.analysis.biz.entity.FlinkTaskEntity;
+import com.sapphire.stock.analysis.common.util.DateUtils;
 import com.sapphire.stock.analysis.core.model.FlinkSQLJob;
 import com.sapphire.stock.analysis.core.model.FlinkSqlExtInfo;
 import com.sapphire.stock.analysis.core.process.BusinessAction;
@@ -68,6 +69,14 @@ public class ReplaceParamsAction implements BusinessAction {
     private String getSqlByFreemaker(String sql, Map<String, String> replaceParams){
 
         try {
+            String partitionDate = replaceParams.get("partitionDate");
+
+            if (partitionDate == null) {
+                replaceParams.put("yesterday", DateUtils.getYesterday());
+            } else {
+                replaceParams.put("yesterday", DateUtils.plusDay(partitionDate, -1));
+            }
+
             Configuration cfg = new Configuration(Configuration.VERSION_2_3_23);
 
             StringTemplateLoader stringTemplateLoader = new StringTemplateLoader();
