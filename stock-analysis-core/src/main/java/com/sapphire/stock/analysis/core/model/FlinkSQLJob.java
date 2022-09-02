@@ -63,4 +63,19 @@ public class FlinkSQLJob {
         Map<String, String> temp = this.extInfo.getReplaceParams();
         return temp.get(key);
     }
+
+    public void setAsyncTaskId(long asyncTaskId) {
+        if (this.extInfo == null) {
+            this.extInfo = new FlinkSqlExtInfo();
+        }
+
+        this.extInfo.setAsyncTaskId(asyncTaskId);
+    }
+
+    public long getAsyncTaskId() {
+        if (this.extInfo == null) {
+            return 0L;
+        }
+        return this.extInfo.getAsyncTaskId();
+    }
 }

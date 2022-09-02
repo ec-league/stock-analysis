@@ -143,4 +143,21 @@ public class DomainConverter {
 
         return domain;
     }
+
+    public static AsyncTask toDomain(AsyncTaskDo dbEntity) {
+        AsyncTask domain = new AsyncTask();
+        if (dbEntity == null) {
+            return null;
+        }
+
+        domain.setId(dbEntity.getId());
+        domain.setAsyncType(dbEntity.getAsyncType());
+        domain.setProcessInfo(JsonUtils.fromJson(dbEntity.getProcessInfo(), ProcessInfo.class));
+        domain.setStatus(dbEntity.getStatus());
+        domain.setErrorCode(dbEntity.getErrorCode());
+        domain.setErrorMsg(dbEntity.getErrorMsg());
+        domain.setGmtCreate(dbEntity.getGmtCreate());
+        domain.setGmtModified(dbEntity.getGmtModified());
+        return domain;
+    }
 }

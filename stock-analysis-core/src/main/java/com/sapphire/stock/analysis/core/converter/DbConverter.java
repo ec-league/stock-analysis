@@ -125,4 +125,17 @@ public class DbConverter {
         dbEntity.setExtInfo(JsonUtils.toJsonStr(domain.getExtInfo()));
         return dbEntity;
     }
+
+    public static AsyncTaskDo toDbEntity(AsyncTask asyncTask) {
+        AsyncTaskDo asyncTaskDo = new AsyncTaskDo();
+        asyncTaskDo.setId(asyncTask.getId());
+        asyncTaskDo.setAsyncType(asyncTask.getAsyncType());
+        asyncTaskDo.setProcessInfo(JsonUtils.toJsonStr(asyncTask.getProcessInfo()));
+        asyncTaskDo.setStatus(asyncTask.getStatus());
+        asyncTaskDo.setErrorCode(asyncTask.getErrorCode());
+        asyncTaskDo.setErrorMsg(asyncTask.getErrorMsg());
+        asyncTaskDo.setGmtCreate(asyncTask.getGmtCreate());
+        asyncTaskDo.setGmtModified(asyncTask.getGmtModified());
+        return asyncTaskDo;
+    }
 }

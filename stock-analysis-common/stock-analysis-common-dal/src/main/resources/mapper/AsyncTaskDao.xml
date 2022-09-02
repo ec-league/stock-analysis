@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sapphire.stock.analysis.common.dal.dao.AsyncTaskDao">
+    <resultMap id="BaseResultMap" type="com.sapphire.stock.analysis.common.dal.model.AsyncTaskDo">
+        <id column="ID" jdbcType="BIGINT" property="id"/>
+        <result column="ASYNC_TYPE" jdbcType="VARCHAR" property="asyncType"/>
+        <result column="PROCESS_INFO" jdbcType="VARCHAR" property="processInfo"/>
+        <result column="STATUS" jdbcType="VARCHAR" property="status"/>
+        <result column="ERROR_CODE" jdbcType="VARCHAR" property="errorCode"/>
+        <result column="ERROR_MSG" jdbcType="VARCHAR" property="errorMsg"/>
+        <result column="GMT_CREATE" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="GMT_MODIFIED" jdbcType="TIMESTAMP" property="gmtModified"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        ID, ASYNC_TYPE, PROCESS_INFO, `STATUS`, ERROR_CODE, ERROR_MSG, GMT_CREATE, GMT_MODIFIED
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ASYNC_TASK
+        where ID = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from ASYNC_TASK
+        where ID = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" keyColumn="ID" keyProperty="id"
+            parameterType="com.sapphire.stock.analysis.common.dal.model.AsyncTaskDo" useGeneratedKeys="true">
+        insert into ASYNC_TASK (ASYNC_TYPE, PROCESS_INFO, `STATUS`, ERROR_CODE, ERROR_MSG,
+        GMT_CREATE, GMT_MODIFIED)
+        values (#{asyncType,jdbcType=VARCHAR}, #{processInfo,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR},
+        #{errorCode}, #{errorMsg},
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        <selectKey keyProperty="id" keyColumn="ID" resultType="java.lang.Long" order="AFTER"
+                   statementType="PREPARED">
+            SELECT last_insert_id()
+        </selectKey>
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="com.sapphire.stock.analysis.common.dal.model.AsyncTaskDo">
+        update ASYNC_TASK
+        set PROCESS_INFO = #{processInfo,jdbcType=VARCHAR},
+            `STATUS`     = #{status,jdbcType=VARCHAR},
+            ERROR_CODE   = #{errorCode},
+            ERROR_MSG    = #{errorMsg},
+            GMT_MODIFIED = CURRENT_TIMESTAMP
+        where ID = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="resetToRetry">
+        update ASYNC_TASK
+        set `STATUS` = 'RETRY'
+        where `STATUS` in ('INIT', 'PROCESSING')
+    </update>
+</mapper>

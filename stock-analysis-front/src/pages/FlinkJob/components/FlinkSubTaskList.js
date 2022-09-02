@@ -188,13 +188,14 @@ class FlinkSubTaskList extends PureComponent {
     const newData = job_child_list
     const index = newData.findIndex(item => row.id === item.id)
     const item = newData[index]
-    newData.splice(index, 1, { ...item, ...row })
+    newData.splice(index, 1, { ...item, ...row });
 
     dispatch({
       type: 'schedule_job_detail/updatePriority',
       payload: {
         id: row.id,
-        priority: row.priority
+        priority: row.priority,
+        scheduleJobId: id,
       }
     }).then(() => {
       this.props.onRefresh()

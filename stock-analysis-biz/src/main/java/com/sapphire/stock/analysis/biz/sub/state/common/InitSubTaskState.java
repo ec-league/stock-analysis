@@ -1,40 +1,52 @@
 package com.sapphire.stock.analysis.biz.sub.state.common;
 
+import java.util.Date;
 import java.util.List;
 
-import com.sapphire.stock.analysis.biz.sub.state.SubTaskContext;
-import com.sapphire.stock.analysis.biz.sub.state.SubTaskState;
-import com.sapphire.stock.analysis.biz.sub.state.SubTaskStateFactory;
-import com.sapphire.stock.analysis.biz.sub.state.SubTaskStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import com.sapphire.stock.analysis.core.model.FlinkSQLJob;
-import com.sapphire.stock.analysis.core.model.FlinkScheduleJob;
-import com.sapphire.stock.analysis.core.model.TaskSequenceFlow;
+import com.sapphire.stock.analysis.biz.sub.state.SubTaskContext;
+import com.sapphire.stock.analysis.biz.sub.state.SubTaskState;
+import com.sapphire.stock.analysis.biz.sub.state.SubTaskStateFactory;
+import com.sapphire.stock.analysis.biz.sub.state.SubTaskStatus;
+import com.sapphire.stock.analysis.core.model.*;
 import com.sapphire.stock.analysis.core.model.enums.TaskSequenceFlowStatus;
+import com.sapphire.stock.analysis.core.repo.AsyncTaskRepository;
 import com.sapphire.stock.analysis.core.repo.FlinkScheduleJobRepository;
 import com.sapphire.stock.analysis.core.repo.FlinkSqlJobRepository;
 import com.sapphire.stock.analysis.core.repo.TaskSequenceFlowRepository;
+
+import lombok.Setter;
 
 /**
  * Author: 柏云鹏 Date: 2022/4/4.
  */
 @Service
 public class InitSubTaskState implements SubTaskState {
-    private static final Logger          logger   = LoggerFactory.getLogger(InitSubTaskState.class);
-    private static final String          BILL_DAY = "bill.day";
+    private static final Logger          logger = LoggerFactory.getLogger(InitSubTaskState.class);
 
-    protected SubTaskStateFactory subTaskStateFactory;
+    @Setter
+    @Autowired
+    protected SubTaskStateFactory        subTaskStateFactory;
 
+    @Setter
+    @Autowired
     private FlinkSqlJobRepository        flinkSqlJobRepository;
 
+    @Setter
+    @Autowired
     private FlinkScheduleJobRepository   flinkScheduleJobRepository;
 
+    @Setter
+    @Autowired
     protected TaskSequenceFlowRepository taskSequenceFlowRepository;
+
+    @Autowired
+    private AsyncTaskRepository          asyncTaskRepository;
 
     @Override
     public void handle(SubTaskContext context) {
@@ -50,6 +62,22 @@ public class InitSubTaskState implements SubTaskState {
         //region 将调度任务参数, 写入到子任务中
         FlinkScheduleJob flinkScheduleJob = context.getFlinkScheduleJob();
         FlinkSQLJob flinkSQLJob = context.getFlinkSQLJob();
+
+
+        // 当前情况下, async task 仅会在 init状态中创建.
+        AsyncTask asyncTask = new AsyncTask();
+        asyncTask.setAsyncType(flinkSQLJob.getType());
+        asyncTask.setStatus(AsyncTask.INIT);
+        ProcessInfo processInfo = new ProcessInfo();
+        processInfo.setStartTime(new Date());
+        asyncTask.setProcessInfo(processInfo);
+
+        asyncTaskRepository.save(asyncTask);
+
+        context.setAsyncTask(asyncTask);
+
+        flinkSQLJob.setAsyncTaskId(asyncTask.getId());
+        flinkSqlJobRepository.save(flinkSQLJob);
 
         // flink sql 任务单次执行, 不包含调度任务.
         if (flinkScheduleJob != null) {
@@ -87,7 +115,7 @@ public class InitSubTaskState implements SubTaskState {
         FlinkSQLJob flinkSQLJob = context.getFlinkSQLJob();
 
         context.setCurrentState(subTaskStateFactory.getByTaskTypeAndStatus(flinkSQLJob.getType(),
-            TaskSequenceFlowStatus.PROCESSING.name()));
+            SubTaskStatus.SUBMIT.name()));
     }
 
     private boolean shouldExecute(SubTaskContext context) {
@@ -106,25 +134,5 @@ public class InitSubTaskState implements SubTaskState {
     @Override
     public SubTaskStatus status() {
         return SubTaskStatus.INIT;
-    }
-
-    @Autowired
-    public void setSubTaskStateFactory(SubTaskStateFactory subTaskStateFactory) {
-        this.subTaskStateFactory = subTaskStateFactory;
-    }
-
-    @Autowired
-    public void setFlinkSqlJobRepository(FlinkSqlJobRepository flinkSqlJobRepository) {
-        this.flinkSqlJobRepository = flinkSqlJobRepository;
-    }
-
-    @Autowired
-    public void setFlinkScheduleJobRepository(FlinkScheduleJobRepository flinkScheduleJobRepository) {
-        this.flinkScheduleJobRepository = flinkScheduleJobRepository;
-    }
-
-    @Autowired
-    public void setTaskSequenceFlowRepository(TaskSequenceFlowRepository taskSequenceFlowRepository) {
-        this.taskSequenceFlowRepository = taskSequenceFlowRepository;
     }
 }

@@ -29,6 +29,16 @@ public class CoreSpringConfig {
         return taskExecutor;
     }
 
+    @Bean("pollTaskExecutor")
+    public ThreadPoolTaskExecutor getPollTaskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setQueueCapacity(100);
+        executor.setCorePoolSize(10);
+
+        executor.initialize();
+        return executor;
+    }
+
     @Bean("taskLoaderExecutor")
     public ThreadPoolTaskExecutor getThreadPoolTaskExecutor() {
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();

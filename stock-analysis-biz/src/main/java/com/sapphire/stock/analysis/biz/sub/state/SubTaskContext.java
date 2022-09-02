@@ -2,16 +2,21 @@ package com.sapphire.stock.analysis.biz.sub.state;
 
 import com.sapphire.stock.analysis.common.util.exception.ErrorCode;
 import com.sapphire.stock.analysis.core.exception.AthenaException;
+import com.sapphire.stock.analysis.core.model.AsyncTask;
 import com.sapphire.stock.analysis.core.model.FlinkSQLJob;
 import com.sapphire.stock.analysis.core.model.FlinkScheduleJob;
 import com.sapphire.stock.analysis.core.model.TaskSequenceFlow;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Author: 柏云鹏 Date: 2022/4/4.
  */
 @Slf4j
+@Getter
+@Setter
 public class SubTaskContext {
     private SubTaskState     currentState;
 
@@ -22,6 +27,8 @@ public class SubTaskContext {
     private FlinkSQLJob      flinkSQLJob;
 
     private FlinkScheduleJob flinkScheduleJob;
+
+    private AsyncTask        asyncTask;
 
     private String           partitionDate;
 
@@ -56,61 +63,5 @@ public class SubTaskContext {
         }
 
         return this.lastState.status();
-    }
-
-    public String getPartitionDate() {
-        return partitionDate;
-    }
-
-    public void setPartitionDate(String partitionDate) {
-        this.partitionDate = partitionDate;
-    }
-
-    public String getErrorCode() {
-        return this.errorCode;
-    }
-
-    public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
-    }
-
-    public String getErrorMsg() {
-        return this.errorMsg;
-    }
-
-    public void setErrorMsg(String errorMsg) {
-        this.errorMsg = errorMsg;
-    }
-
-    public SubTaskState getCurrentState() {
-        return currentState;
-    }
-
-    public void setCurrentState(SubTaskState currentState) {
-        this.currentState = currentState;
-    }
-
-    public TaskSequenceFlow getTaskSequenceFlow() {
-        return taskSequenceFlow;
-    }
-
-    public void setTaskSequenceFlow(TaskSequenceFlow taskSequenceFlow) {
-        this.taskSequenceFlow = taskSequenceFlow;
-    }
-
-    public FlinkSQLJob getFlinkSQLJob() {
-        return flinkSQLJob;
-    }
-
-    public void setFlinkSQLJob(FlinkSQLJob flinkSQLJob) {
-        this.flinkSQLJob = flinkSQLJob;
-    }
-
-    public FlinkScheduleJob getFlinkScheduleJob() {
-        return flinkScheduleJob;
-    }
-
-    public void setFlinkScheduleJob(FlinkScheduleJob flinkScheduleJob) {
-        this.flinkScheduleJob = flinkScheduleJob;
     }
 }

@@ -17,4 +17,6 @@ public class FlinkSqlExtInfo {
     private String              partitionDate;
 
     private List<String>        executeFactor = new ArrayList<>();
+
+    private long                asyncTaskId;
 }

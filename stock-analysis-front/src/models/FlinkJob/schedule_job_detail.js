@@ -127,7 +127,7 @@ export default {
       if (!response || !response.success) {
         message.error('系统异常, 请稍后再试')
       } else {
-        const jobListResp = yield call(queryTaskSeqList, payload.id)
+        const jobListResp = yield call(queryTaskSeqList, payload.scheduleJobId)
         if (!jobListResp || !jobListResp.success) {
           message.error('系统异常, 请稍后再试')
         } else {

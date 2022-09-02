@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -236,4 +237,71 @@ public class FlinkSchedulerJobController {
         }
     }
 
+    @ResponseBody
+    @PostMapping("/api/flink-schedule/submit-job-single.json")
+    public Response<Long> submitScheduleJobSingleTimes(@RequestBody FlinkScheduleJob flinkScheduleJob) {
+
+        try {
+
+            if (StringUtils.equals(flinkScheduleJob.getStatus(), "T")) {
+                return Response.errorResponse("调度任务正在运行，请先失效调度");
+            }
+
+            ProcessContext context = new ProcessContext();
+            context.setProductCode("flink_scheduler");
+            context.setBusinessCode("build");
+            FlinkSchedulerEntity flinkSchedulerEntity = new FlinkSchedulerEntity();
+            flinkSchedulerEntity.setSingleTimes("T");
+            flinkSchedulerEntity.setFlinkScheduleJob(flinkScheduleJob);
+
+            String partitionDate = DateUtils.formatDate(new Date(), "yyyy-MM-dd");
+            if (!StringUtils.isEmpty(flinkScheduleJob.getExtInfo().getType())) {
+                if (flinkScheduleJob.getExtInfo().getType()
+                        .equals(FlinkScheduleJobConfig.HISTORY_TYPE))
+                    partitionDate = flinkScheduleJob.getExtInfo().getStartDate();
+            }
+            Map<String, String> extInfo = new HashMap<>(
+                    flinkScheduleJob.getExtInfo().getReplaceParams() != null
+                            ? flinkScheduleJob.getExtInfo().getReplaceParams()
+                            : new HashMap<>());
+            extInfo.put("partitionDate", partitionDate);
+            flinkSchedulerEntity.setExtInfo(extInfo);
+            flinkScheduleJob.getExtInfo().setPartitionDate(partitionDate);
+            flinkScheduleJob.getExtInfo().setReplaceParams(extInfo);
+
+            context.setEntity(flinkSchedulerEntity);
+            ProcessConfig processConfig = processConfigCache.getProcessConfig(context);
+            context.setProcessConfig(processConfig);
+            processExecutor.execute(context);
+            if (!flinkSchedulerEntity.isSuccess()) {
+                throw new AthenaException(context.getErrorCode(), context.getErrorMsg());
+            }
+
+            Response<Long> response = new Response<>();
+            response.setData(flinkSchedulerEntity.getParentFlowId());
+            response.setSuccess(true);
+            return response;
+        } catch (Exception e) {
+            log.error("submitScheduleJob exception", e);
+            return Response.errorResponse(ErrorCode.SYSTEM_ERROR.name(), "请稍后再试");
+        }
+    }
+
+    @GetMapping("/api/flink-schedule/get-son-flow.json")
+    public Response<List<TaskSequenceFlow>> querySonFlow(@RequestParam("parentId") String parentId) {
+        try {
+
+            List<TaskSequenceFlow> taskSequenceFlowList = taskSequenceFlowRepository
+                    .selectByParentId(Long.parseLong(parentId));
+
+            Response<List<TaskSequenceFlow>> response = new Response<>();
+            response.setSuccess(true);
+            response.setData(taskSequenceFlowList);
+
+            return response;
+        } catch (Exception e) {
+            log.error("querySonFlow exception", e);
+            return Response.errorResponse(ErrorCode.SYSTEM_ERROR.name(), "请稍后再试");
+        }
+    }
 }

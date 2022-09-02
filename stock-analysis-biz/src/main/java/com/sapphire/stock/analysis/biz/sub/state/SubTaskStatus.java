@@ -5,6 +5,7 @@ package com.sapphire.stock.analysis.biz.sub.state;
  */
 public enum SubTaskStatus {
     INIT,
+    SUBMIT,
     PROCESSING,
     POST_PROCESS,
     RETRY,
