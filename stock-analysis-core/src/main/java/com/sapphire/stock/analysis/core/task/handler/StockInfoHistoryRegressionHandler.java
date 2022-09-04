@@ -4,18 +4,19 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import com.sapphire.stock.analysis.core.constant.TaskStatus;
-import com.sapphire.stock.analysis.core.model.StockInfo;
-import com.sapphire.stock.analysis.core.repo.StockInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sapphire.stock.analysis.common.dal.model.StockDailyDigestDO;
 import com.sapphire.stock.analysis.common.integration.client.HistoryStockClient;
+import com.sapphire.stock.analysis.core.constant.TaskStatus;
 import com.sapphire.stock.analysis.core.converter.DomainConverter;
 import com.sapphire.stock.analysis.core.model.StockDailyDigest;
+import com.sapphire.stock.analysis.core.model.StockInfo;
 import com.sapphire.stock.analysis.core.model.Task;
+import com.sapphire.stock.analysis.core.repo.PartitionDateRepository;
 import com.sapphire.stock.analysis.core.repo.StockDailyDigestRepository;
+import com.sapphire.stock.analysis.core.repo.StockInfoRepository;
 import com.sapphire.stock.analysis.core.repo.TaskRepository;
 import com.sapphire.stock.analysis.core.task.TaskExecuteException;
 import com.sapphire.stock.analysis.core.task.TaskHandler;
@@ -30,16 +31,19 @@ import lombok.extern.slf4j.Slf4j;
 public class StockInfoHistoryRegressionHandler implements TaskHandler {
 
     @Autowired
-    private TaskRepository       taskRepository;
+    private TaskRepository             taskRepository;
 
     @Autowired
-    private HistoryStockClient   historyStockClient;
+    private HistoryStockClient         historyStockClient;
 
     @Autowired
     private StockDailyDigestRepository stockDailyDigestRepo;
 
     @Autowired
-    private StockInfoRepository stockInfoRepository;
+    private StockInfoRepository        stockInfoRepository;
+
+    @Autowired
+    private PartitionDateRepository    partitionDateRepository;
 
     @Override
     public void completeTask(Task task) {
@@ -56,6 +60,12 @@ public class StockInfoHistoryRegressionHandler implements TaskHandler {
 
             String endDate = new SimpleDateFormat("yyyy-MM-dd").format(instance.getTime());
 
+            StockInfo stockInfo = stockInfoRepository.selectByCode(code);
+
+            if (stockInfo == null) {
+                return;
+            }
+
             List<StockDailyDigestDO> stockDailyDigestDOS = historyStockClient
                 .queryStockHistory(code, startDate, endDate);
 
@@ -63,18 +73,16 @@ public class StockInfoHistoryRegressionHandler implements TaskHandler {
 
             for (StockDailyDigestDO stockDailyDigestDO : stockDailyDigestDOS) {
                 StockDailyDigest domain = DomainConverter.toDomain(stockDailyDigestDO);
+                domain.setName(stockInfo.getStockName());
                 stockDailyDigestRepo.save(domain);
                 partitionDate = stockDailyDigestDO.getPartitionDate();
             }
 
             if (partitionDate != null) {
-                StockInfo stockInfo = stockInfoRepository.selectByCode(code);
-
-                if (stockInfo != null) {
-                    stockInfo.getExtInfo().put("partitionDate", partitionDate);
-                }
+                stockInfo.getExtInfo().put("partitionDate", partitionDate);
 
                 stockInfoRepository.save(stockInfo);
+                partitionDateRepository.save(partitionDate);
             }
 
             // 只回溯到当前
