@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class HistoryStockClient {
-    private static final String URL_PREFIX = "https://web.ifzq.gtimg.cn/appstock/app/fqkline/get?param=%s,day,%s,%s,500,qfq";
+    private static final String URL_PREFIX = "https://web.ifzq.gtimg.cn/appstock/app/fqkline/get?param=%s,day,%s,%s,500,bfq";
 
     @Setter
     @Autowired
@@ -57,7 +57,7 @@ public class HistoryStockClient {
 
 
         JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONObject(key).getJSONArray(
-                "qfqday");
+                "day");
         if (CollectionUtils.isEmpty(jsonArray)) {
             return Collections.emptyList();
         }

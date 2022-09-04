@@ -87,6 +87,8 @@ public class StockInfoHistoryRegressionHandler implements TaskHandler {
 
             // 只回溯到当前
             if (instance.getTime().after(new Date())) {
+                task.setStatus(TaskStatus.SUCCESS.name());
+                taskRepository.save(task);
                 return;
             }
 
