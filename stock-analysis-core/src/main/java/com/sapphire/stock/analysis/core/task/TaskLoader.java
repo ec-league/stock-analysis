@@ -106,7 +106,6 @@ public class TaskLoader {
         try {
             List<Long> taskIdList = taskRepository.selectFireTasks(taskType, singleNum);
             if (CollectionUtils.isEmpty(taskIdList)) {
-                logger.info("There is no task to be consumed, TaskType=" + taskType);
                 return;
             }
             for (final Long taskFlowId : taskIdList) {

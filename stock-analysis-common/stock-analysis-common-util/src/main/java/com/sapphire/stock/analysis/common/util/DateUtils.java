@@ -28,7 +28,7 @@ public class DateUtils {
         return dateFormat.format(date);
     }
 
-    public static String getYesterday() {
+    public static String getToday() {
         return new SimpleDateFormat("yyyy-MM-dd").format(new Date()); 
     }
     

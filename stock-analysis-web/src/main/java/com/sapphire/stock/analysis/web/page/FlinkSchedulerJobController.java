@@ -109,28 +109,11 @@ public class FlinkSchedulerJobController {
 
     @ResponseBody
     @PostMapping("/api/flink-job/update-schedule-sql-job.json")
-    public Response<Long> updateScheduleJob(@RequestBody FlinkScheduleJob flinkScheduleJob) {
+    public Response<Long> updateScheduleJob(@RequestBody FlinkSQLJob flinkSQLJob) {
         try {
-            flinkScheduleJob.setGmtModified(new Date());
-            flinkScheduleJobRepository.save(flinkScheduleJob);
+            flinkSqlJobRepository.save(flinkSQLJob);
 
-            List<FlinkSQLJob> flinkSQLJobs = flinkSqlJobRepository
-                .selectByScheduleJobId(flinkScheduleJob.getId());
-            FlinkScheduleJobConfig extInfo = flinkScheduleJob.getExtInfo();
-            if (extInfo != null) {
-                if (!CollectionUtils.isEmpty(flinkSQLJobs)) {
-                    for (FlinkSQLJob flinkSQLJob : flinkSQLJobs) {
-                        FlinkConfig flinkConfig = flinkSQLJob.getFlinkConfig();
-                        if (flinkScheduleJob.getExtInfo() != null) {
-                            flinkConfig
-                                .setParallelism(flinkScheduleJob.getExtInfo().getParallelism());
-                            flinkSqlJobRepository.save(flinkSQLJob);
-                        }
-                    }
-                }
-            }
-
-            return Response.successResponse(flinkScheduleJob.getId());
+            return Response.successResponse(flinkSQLJob.getId());
         } catch (Exception e) {
             log.error("update flinkSQLJob  failed!", e);
             return Response.errorResponse(e.getClass().getSimpleName(), e.getMessage());

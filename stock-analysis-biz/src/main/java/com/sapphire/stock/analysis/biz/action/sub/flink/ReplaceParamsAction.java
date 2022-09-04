@@ -9,6 +9,7 @@ import com.sapphire.stock.analysis.core.model.FlinkSqlExtInfo;
 import com.sapphire.stock.analysis.core.process.BusinessAction;
 import com.sapphire.stock.analysis.core.process.ProcessContext;
 import com.sapphire.stock.analysis.core.repo.FlinkSqlJobRepository;
+import com.sapphire.stock.analysis.core.repo.PartitionDateRepository;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -28,7 +29,11 @@ public class ReplaceParamsAction implements BusinessAction {
 
     private static final Logger logger = LoggerFactory.getLogger(ReplaceParamsAction.class);
 
+    @Autowired
     private FlinkSqlJobRepository flinkSqlJobRepository;
+
+    @Autowired
+    private PartitionDateRepository partitionDateRepository;
 
     @Override
     public void process(ProcessContext processContext) {
@@ -56,25 +61,21 @@ public class ReplaceParamsAction implements BusinessAction {
             flinkSqlJobRepository.save(flinkSQLJob);
         }
 
-        entity.setReplacedSql(getSqlByFreemaker(sql, replaceParams));
+        entity.setReplacedSql(getSqlByFreemarker(sql, replaceParams));
 
         logger.info("ReplaceParamsAction success");
     }
 
-    @Autowired
-    public void setFlinkSqlJobRepository(FlinkSqlJobRepository flinkSqlJobRepository) {
-        this.flinkSqlJobRepository = flinkSqlJobRepository;
-    }
-
-    private String getSqlByFreemaker(String sql, Map<String, String> replaceParams){
+    private String getSqlByFreemarker(String sql, Map<String, String> replaceParams){
 
         try {
             String partitionDate = replaceParams.get("partitionDate");
 
             if (partitionDate == null) {
-                replaceParams.put("yesterday", DateUtils.getYesterday());
+                String today = DateUtils.getToday();
+                replaceParams.put("yesterday", partitionDateRepository.getLastPartitionDate(today));
             } else {
-                replaceParams.put("yesterday", DateUtils.plusDay(partitionDate, -1));
+                replaceParams.put("yesterday", partitionDateRepository.getLastPartitionDate(partitionDate));
             }
 
             Configuration cfg = new Configuration(Configuration.VERSION_2_3_23);

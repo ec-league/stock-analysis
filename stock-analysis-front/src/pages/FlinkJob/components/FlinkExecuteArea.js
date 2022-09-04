@@ -81,7 +81,8 @@ class FlinkExecuteArea extends PureComponent {
       flink_sql_job_edit: { flinkSqlJobInfo },
       console_state_manager: { rowInfo },
       dispatch
-    } = this.props
+    } = this.props;
+    console.log()
     if (rowInfo && typeof rowInfo.rowIndex === 'number') {
       dispatch({
         type: 'flink_sql_job_edit/updateFlinkSqlJob',
