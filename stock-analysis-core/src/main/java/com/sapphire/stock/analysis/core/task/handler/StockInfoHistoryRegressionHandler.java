@@ -76,6 +76,7 @@ public class StockInfoHistoryRegressionHandler implements TaskHandler {
                 domain.setName(stockInfo.getStockName());
                 stockDailyDigestRepo.save(domain);
                 partitionDate = stockDailyDigestDO.getPartitionDate();
+                partitionDateRepository.save(stockDailyDigestDO.getPartitionDate());
             }
 
             if (partitionDate != null) {

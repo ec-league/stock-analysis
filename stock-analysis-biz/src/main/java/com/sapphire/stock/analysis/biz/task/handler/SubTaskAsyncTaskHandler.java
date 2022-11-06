@@ -20,6 +20,8 @@ import com.sapphire.stock.analysis.core.task.TaskHandler;
 
 import lombok.extern.slf4j.Slf4j;
 
+import javax.annotation.Resource;
+
 /**
  * Author: 柏云鹏
  * Date: 2021/11/3.
@@ -28,16 +30,16 @@ import lombok.extern.slf4j.Slf4j;
 @Service("subTaskAsyncTaskHandler")
 public class SubTaskAsyncTaskHandler implements TaskHandler {
 
-    @Autowired
+    @Resource
     private FlinkSqlJobRepository flinkSqlJobRepository;
 
-    @Autowired
+    @Resource
     private TaskRepository        taskRepository;
 
-    @Autowired
+    @Resource
     private FlinkClient           flinkClient;
 
-    @Autowired
+    @Resource
     private AsyncTaskRepository   asyncTaskRepository;
 
     @Override

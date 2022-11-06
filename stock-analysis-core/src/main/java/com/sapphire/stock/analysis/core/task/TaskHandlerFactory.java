@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -18,7 +19,7 @@ public class TaskHandlerFactory {
 
     private final Map<String, TaskHandler> taskHandlerMap = new HashMap<>();
 
-    @Autowired
+    @Resource
     private ApplicationContext             applicationContext;
 
     @PostConstruct

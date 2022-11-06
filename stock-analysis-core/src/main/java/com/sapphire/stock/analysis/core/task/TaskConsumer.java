@@ -10,6 +10,8 @@ import com.sapphire.stock.analysis.core.repo.TaskRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
+import javax.annotation.Resource;
+
 /**
  * Author: 柏云鹏
  * Date: 2022/2/23.
@@ -18,10 +20,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TaskConsumer {
 
-    @Autowired
+    @Resource
     private TaskRepository     taskRepository;
 
-    @Autowired
+    @Resource
     private TaskHandlerFactory taskHandlerFactory;
 
     public void consumeTask(long taskId) {

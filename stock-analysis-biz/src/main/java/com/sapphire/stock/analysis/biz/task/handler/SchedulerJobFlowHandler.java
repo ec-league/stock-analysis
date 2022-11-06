@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 
 import com.sapphire.stock.analysis.core.constant.TaskStatus;
 import org.apache.commons.lang.StringUtils;
@@ -31,12 +32,17 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class SchedulerJobFlowHandler implements TaskHandler {
+
+    @Resource
     private TaskSequenceFlowExecutor   taskSequenceFlowExecutor;
 
+    @Resource
     private TaskSequenceFlowRepository taskSequenceFlowRepository;
 
+    @Resource
     private FlinkScheduleJobRepository flinkScheduleJobRepository;
 
+    @Resource
     private TaskRepository             taskRepository;
 
     private Map<Integer, Integer>      waitMinutes;
@@ -120,8 +126,9 @@ public class SchedulerJobFlowHandler implements TaskHandler {
                 break;
             case FINISH:
                 task.setStatus(TaskStatus.SUCCESS.name());
-                if (flinkScheduleJob != null && flinkScheduleJob.getExtInfo() != null && StringUtils
-                    .equalsIgnoreCase(flinkScheduleJob.getExtInfo().getNeedEndNotice(), "T")) {
+                if (flinkScheduleJob != null
+                        && flinkScheduleJob.getExtInfo() != null
+                        && StringUtils.equalsIgnoreCase(flinkScheduleJob.getExtInfo().getNeedEndNotice(), "T")) {
                 }
                 break;
             default:
@@ -131,25 +138,5 @@ public class SchedulerJobFlowHandler implements TaskHandler {
         }
 
         taskRepository.save(task);
-    }
-
-    @Autowired
-    public void setTaskSequenceFlowExecutor(TaskSequenceFlowExecutor taskSequenceFlowExecutor) {
-        this.taskSequenceFlowExecutor = taskSequenceFlowExecutor;
-    }
-
-    @Autowired
-    public void setTaskSequenceFlowRepository(TaskSequenceFlowRepository taskSequenceFlowRepository) {
-        this.taskSequenceFlowRepository = taskSequenceFlowRepository;
-    }
-
-    @Autowired
-    public void setTaskRepository(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
-    }
-
-    @Autowired
-    public void setFlinkScheduleJobRepository(FlinkScheduleJobRepository flinkScheduleJobRepository) {
-        this.flinkScheduleJobRepository = flinkScheduleJobRepository;
     }
 }
