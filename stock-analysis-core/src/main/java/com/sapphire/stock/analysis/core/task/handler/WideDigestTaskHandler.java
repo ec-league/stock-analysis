@@ -1,9 +1,8 @@
-package com.sapphire.stock.analysis.biz.task.handler;
+package com.sapphire.stock.analysis.core.task.handler;
 
 import com.sapphire.stock.analysis.core.model.Task;
 import com.sapphire.stock.analysis.core.repo.PartitionDateRepository;
 import com.sapphire.stock.analysis.core.repo.StockDailyDigestRepository;
-import com.sapphire.stock.analysis.core.task.TaskHandler;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
