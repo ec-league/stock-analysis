@@ -5,9 +5,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Repository;
 
 import com.sapphire.stock.analysis.common.dal.dao.StockDailyDigestDao;
-import com.sapphire.stock.analysis.common.dal.dao.StockDailyWideDigestDao;
 import com.sapphire.stock.analysis.common.dal.model.StockDailyDigestDO;
-import com.sapphire.stock.analysis.common.dal.model.StockDailyWideDigestDO;
 import com.sapphire.stock.analysis.core.converter.DbConverter;
 import com.sapphire.stock.analysis.core.converter.DomainConverter;
 import com.sapphire.stock.analysis.core.model.StockDailyDigest;
@@ -22,16 +20,10 @@ public class StockDailyDigestRepository {
     @Resource
     private StockDailyDigestDao     stockDailyDigestDao;
 
-    @Resource
-    private StockDailyWideDigestDao stockDailyWideDigestDao;
-
     public void save(StockDailyDigest stockDailyDigest) {
         StockDailyDigestDO dbEntity = DbConverter.toDbEntity(stockDailyDigest);
 
         StockDailyDigestDO stockDailyDigestDO = stockDailyDigestDao
-            .selectByCodeAndPartitionDate(dbEntity.getCode(), dbEntity.getPartitionDate());
-
-        StockDailyWideDigestDO stockDailyWideDigestDO = stockDailyWideDigestDao
             .selectByCodeAndPartitionDate(dbEntity.getCode(), dbEntity.getPartitionDate());
 
         if (stockDailyDigestDO != null) {

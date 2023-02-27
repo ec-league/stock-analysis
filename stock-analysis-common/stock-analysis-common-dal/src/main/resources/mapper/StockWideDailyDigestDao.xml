@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sapphire.stock.analysis.common.dal.dao.StockWideDailyDigestDao">
+    <resultMap id="BaseResultMap" type="com.sapphire.stock.analysis.common.dal.model.StockWideDailyDigestDO">
+        <id column="ID" jdbcType="BIGINT" property="id"/>
+        <result column="CODE" jdbcType="VARCHAR" property="code"/>
+        <result column="PARTITION_DATE" jdbcType="VARCHAR" property="partitionDate"/>
+        <result column="EXT_INFO" jdbcType="CLOB" property="extInfo"/>
+        <result column="GMT_CREATE" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="GMT_MODIFIED" jdbcType="TIMESTAMP" property="gmtModified"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        ID, CODE, `NAME`, PARTITION_DATE, EXT_INFO,
+    GMT_CREATE, GMT_MODIFIED
+    </sql>
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from STOCK_DAILY_WIDE_DIGEST
+        where ID = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="selectByCodeAndPartitionDate" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from STOCK_DAILY_WIDE_DIGEST
+        where CODE = #{code} AND PARTITION_DATE = #{partitionDate}
+    </select>
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete
+        from STOCK_DAILY_WIDE_DIGEST
+        where ID = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" keyColumn="ID" keyProperty="id"
+            parameterType="com.sapphire.stock.analysis.common.dal.model.StockWideDailyDigestDO" useGeneratedKeys="true">
+        insert into STOCK_DAILY_WIDE_DIGEST (CODE, PARTITION_DATE, EXT_INFO, GMT_CREATE, GMT_MODIFIED)
+        values (#{code,jdbcType=VARCHAR}, #{partitionDate,jdbcType=VARCHAR}, #{extInfo,jdbcType=CLOB},
+                CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    </insert>
+    <insert id="insertAll">
+        insert into STOCK_DAILY_WIDE_DIGEST (CODE, PARTITION_DATE, EXT_INFO, GMT_CREATE, GMT_MODIFIED) VALUES
+        <foreach collection="list" item="item"
+                 separator=",">
+            (
+            #{item.code},
+            #{item.partitionDate},
+            #{item.extInfo},
+            CURRENT_TIMESTAMP,
+            CURRENT_TIMESTAMP
+            )
+        </foreach>
+    </insert>
+    <update id="updateById" parameterType="com.sapphire.stock.analysis.common.dal.model.StockWideDailyDigestDO">
+        update STOCK_DAILY_WIDE_DIGEST
+        set EXT_INFO     = #{extInfo,jdbcType=CLOB},
+            GMT_MODIFIED = CURRENT_TIMESTAMP
+        where ID = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByCodeAndPartitionDate"
+            parameterType="com.sapphire.stock.analysis.common.dal.model.StockWideDailyDigestDO">
+        update STOCK_DAILY_WIDE_DIGEST
+        set EXT_INFO     = #{extInfo,jdbcType=CLOB},
+            GMT_MODIFIED = CURRENT_TIMESTAMP
+        where CODE = #{code}
+          AND PARTITION_DATE = #{partitionDate}
+    </update>
+</mapper>
