@@ -9,8 +9,7 @@ import com.sapphire.stock.analysis.core.model.*;
 import com.sapphire.stock.analysis.core.model.enums.FlinkSqlStatus;
 
 /**
- * Author: 柏云鹏
- * Date: 2022/2/23.
+ * Author: 柏云鹏 Date: 2022/2/23.
  */
 public class DomainConverter {
     public static Task toDomain(TaskDo taskDo) {
@@ -67,7 +66,7 @@ public class DomainConverter {
         domain.setScheduleJobId(dbEntity.getScheduleJobId());
         domain.setFlinkConfig(JsonUtils.fromJson(dbEntity.getFlinkConfig(), FlinkConfig.class));
         if (StringUtils.isEmpty(dbEntity.getJobConfig())
-            || dbEntity.getJobConfig().equals("null")) {
+                || dbEntity.getJobConfig().equals("null")) {
             domain.setJobConfig(new JobConfig());
         } else {
             domain.setJobConfig(JsonUtils.fromJson(dbEntity.getJobConfig(), JobConfig.class));
@@ -75,7 +74,7 @@ public class DomainConverter {
         domain.setName(dbEntity.getName());
         domain.setFlinkJobId(dbEntity.getFlinkJobId());
         domain.setStatus(StringUtils.isEmpty(dbEntity.getStatus()) ? FlinkSqlStatus.INIT.name()
-            : dbEntity.getStatus());
+                : dbEntity.getStatus());
         domain.setGmtCreate(dbEntity.getGmtCreate());
         domain.setGmtModified(dbEntity.getGmtModified());
         domain.setTaskSeqId(dbEntity.getTaskSeqId());
@@ -118,10 +117,10 @@ public class DomainConverter {
         domain.setType(dbEntity.getType());
         if (StringUtils.equals("FILE", dbEntity.getType())) {
             domain.setSourceConfig(
-                JsonUtils.fromJson(dbEntity.getSourceConfig(), FileSourceConfig.class));
+                    JsonUtils.fromJson(dbEntity.getSourceConfig(), FileSourceConfig.class));
         } else if (StringUtils.equals("MYSQL", dbEntity.getType())) {
             domain.setMysqlSourceConfig(
-                JsonUtils.fromJson(dbEntity.getSourceConfig(), MysqlSourceConfig.class));
+                    JsonUtils.fromJson(dbEntity.getSourceConfig(), MysqlSourceConfig.class));
         }
 
         domain.setGmtCreate(dbEntity.getGmtCreate());
@@ -158,6 +157,19 @@ public class DomainConverter {
         domain.setErrorMsg(dbEntity.getErrorMsg());
         domain.setGmtCreate(dbEntity.getGmtCreate());
         domain.setGmtModified(dbEntity.getGmtModified());
+        return domain;
+    }
+
+    public static StockWideDailyDigest toDomain(StockWideDailyDigestDO dbEntity) {
+
+        StockWideDailyDigest domain = new StockWideDailyDigest();
+        domain.setGmtCreate(dbEntity.getGmtCreate());
+        domain.setGmtModified(dbEntity.getGmtModified());
+        domain.setCode(dbEntity.getCode());
+        domain.setPartitionDate(dbEntity.getPartitionDate());
+        domain.setId(dbEntity.getId());
+        domain.setStockWideDetail(JsonUtils.fromJson(dbEntity.getExtInfo(), StockWideDetail.class));
+
         return domain;
     }
 }

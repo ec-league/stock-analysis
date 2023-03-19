@@ -1,6 +1,6 @@
 package com.sapphire.stock.analysis.biz.action;
 
-import com.sapphire.stock.analysis.biz.entity.DigestEntity;
+import com.sapphire.stock.analysis.biz.entity.aware.TaskChainAware;
 import com.sapphire.stock.analysis.common.util.DateUtils;
 import com.sapphire.stock.analysis.core.model.Task;
 import com.sapphire.stock.analysis.core.process.BusinessAction;
@@ -24,26 +24,26 @@ public class CreateNextRegressionTaskAction implements BusinessAction {
 
     @Override
     public void process(ProcessContext context) {
-        DigestEntity entity = context.getEntity();
+        TaskChainAware entity = context.getEntity();
         String code = entity.getCode();
 
-        String endDate = entity.getEndDate();
+        String endDate = entity.getNextDate();
 
         Date date = DateUtils.parseStringToDate(endDate, "yyyy-MM-dd");
 
         if (!date.after(new Date())) {
-            createNextTask(code, endDate);
+            createNextTask(entity);
         }
     }
 
-    private void createNextTask(String code, String startDate) {
+    private void createNextTask(TaskChainAware entity) {
         Task nextTask = new Task();
 
         nextTask.setStatus("INIT");
         Map<String, String> nextTaskExtInfo = new HashMap<>();
 
-        nextTaskExtInfo.put("code", code);
-        nextTaskExtInfo.put("partitionDate", startDate);
+        nextTaskExtInfo.put("code", entity.getCode());
+        nextTaskExtInfo.put("partitionDate", entity.getNextDate());
         nextTask.setExtInfo(nextTaskExtInfo);
         nextTask.setFireDate(new Date());
         nextTask.setRetryTimes(0);

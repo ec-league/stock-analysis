@@ -6,8 +6,4 @@ package com.sapphire.stock.analysis.biz.entity.aware;
  */
 public interface PartitionDateAware {
     String getPartitionDate();
-
-    String getLastTradingDay();
-
-    void setLastTradingDay(String lastTradingDay);
 }

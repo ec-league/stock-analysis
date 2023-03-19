@@ -2,20 +2,21 @@
   "processStageMap": {
     "PRE_PROCESS": {
       "actions": [
-
       ]
     },
     "PROCESS": {
       "actions": [
-        "setEndDateAction",
         "loadStockInfoAction",
-        "queryHistoryDailyDigestAction",
+        "calculateLastPartitionDateAction",
+        "loadLastWideDigestAction",
+        "loadDailyDigestAction",
+        "calculateCurrentWideDigestAction",
         "createNextRegressionTaskAction"
       ]
     },
     "ERROR_PROCESS": {
       "actions": [
-        "commonErrorHandleAction"
+        "lastTradingNotExistsProcessAction"
       ]
     }
   }

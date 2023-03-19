@@ -2,7 +2,10 @@ package com.sapphire.stock.analysis.biz.entity;
 
 import com.sapphire.stock.analysis.biz.entity.aware.PartitionDateAware;
 import com.sapphire.stock.analysis.biz.entity.aware.TaskChainAware;
+import com.sapphire.stock.analysis.common.util.DateUtils;
+import com.sapphire.stock.analysis.core.model.StockDailyDigest;
 import com.sapphire.stock.analysis.core.model.StockInfo;
+import com.sapphire.stock.analysis.core.model.StockWideDailyDigest;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +15,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class DigestEntity extends BaseEntity implements PartitionDateAware, TaskChainAware {
+public class WideDigestEntity extends BaseEntity implements PartitionDateAware, TaskChainAware {
 
     private String code;
 
@@ -24,13 +27,21 @@ public class DigestEntity extends BaseEntity implements PartitionDateAware, Task
 
     private String endDate;
 
+    private String lastTradingDay;
+
+    private StockWideDailyDigest lastWideDigest;
+
+    private StockDailyDigest currentDigest;
+
+    private StockWideDailyDigest currentWideDigest;
+
     @Override
     public String getNextDate() {
-        return this.endDate;
+        return DateUtils.plusDay(this.partitionDate);
     }
 
     @Override
     public String getTaskType() {
-        return "STOCK_INFO_REGRESSION";
+        return "WIDE_DIGEST_REGRESSION";
     }
 }

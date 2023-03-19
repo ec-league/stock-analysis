@@ -1,0 +1,21 @@
+{
+  "processStageMap": {
+    "PRE_PROCESS": {
+      "actions": [
+      ]
+    },
+    "PROCESS": {
+      "actions": [
+        "setEndDateAction",
+        "loadStockInfoAction",
+        "queryHistoryDailyDigestAction",
+        "createNextRegressionTaskAction"
+      ]
+    },
+    "ERROR_PROCESS": {
+      "actions": [
+        "commonErrorHandleAction"
+      ]
+    }
+  }
+}
