@@ -1,4 +1,4 @@
-package com.sapphire.stock.analysis.core.task.handler;
+package com.sapphire.stock.analysis.biz.task.handler;
 
 import com.sapphire.stock.analysis.core.model.Task;
 import com.sapphire.stock.analysis.core.repo.PartitionDateRepository;
@@ -34,6 +34,11 @@ public class WideDigestTaskHandler extends BaseTaskHandler {
             dealSuccess(task);
             return;
         }
+
+        // calculate last trading day
+        String lastPartitionDate = partitionDateRepository.getLastPartitionDate(partitionDate);
+
+
     }
 
     @Override

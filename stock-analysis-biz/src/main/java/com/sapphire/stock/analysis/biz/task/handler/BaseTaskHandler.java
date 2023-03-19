@@ -1,4 +1,4 @@
-package com.sapphire.stock.analysis.core.task.handler;
+package com.sapphire.stock.analysis.biz.task.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.sapphire.stock.analysis.core.constant.TaskStatus;
