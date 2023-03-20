@@ -17,5 +17,5 @@ public abstract class BaseEntity implements Serializable {
 
     private Map<String, String> extInfo = new HashMap<String, String>();
 
-    private boolean             success;
+    private boolean             success = true;
 }

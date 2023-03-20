@@ -1,6 +1,6 @@
 package com.sapphire.stock.analysis.biz.action;
 
-import com.sapphire.stock.analysis.biz.entity.DigestEntity;
+import com.sapphire.stock.analysis.biz.entity.aware.StockCodeAware;
 import com.sapphire.stock.analysis.core.model.StockInfo;
 import com.sapphire.stock.analysis.core.process.BusinessAction;
 import com.sapphire.stock.analysis.core.process.ProcessContext;
@@ -21,12 +21,14 @@ public class LoadStockInfoAction implements BusinessAction {
 
     @Override
     public void process(ProcessContext context) {
-        DigestEntity entity = context.getEntity();
+        StockCodeAware entity = context.getEntity();
 
         StockInfo stockInfo = stockInfoRepository.selectByCode(entity.getCode());
 
         if (stockInfo == null) {
             throw new ProcessException("STOCK_CODE_NOT_EXISTS", "未配置股票标准信息, 无法回溯!");
         }
+
+        entity.setStockInfo(stockInfo);
     }
 }

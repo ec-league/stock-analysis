@@ -1,6 +1,7 @@
 package com.sapphire.stock.analysis.biz.action;
 
 import com.sapphire.stock.analysis.biz.entity.WideDigestEntity;
+import com.sapphire.stock.analysis.core.model.StockWideDailyDigest;
 import com.sapphire.stock.analysis.core.process.BusinessAction;
 import com.sapphire.stock.analysis.core.process.ProcessContext;
 import com.sapphire.stock.analysis.core.repo.StockDailyDigestRepository;
@@ -9,28 +10,20 @@ import javax.annotation.Resource;
 
 /**
  * @author 柏云鹏
- * @since 2023/3/19.
+ * @since 2023/3/20.
  */
-@Action("lastTradingNotExistsProcessAction")
-public class LastTradingNotExistsProcessAction implements BusinessAction {
+@Action("saveCurrentWideDigestAction")
+public class SaveCurrentWideDigestAction implements BusinessAction {
 
     @Resource
     private StockDailyDigestRepository stockDailyDigestRepository;
-
-    @Resource
-    private CreateNextRegressionTaskAction createNextRegressionTaskAction;
 
     @Override
     public void process(ProcessContext context) {
         WideDigestEntity entity = context.getEntity();
 
-        switch (context.getErrorCode()) {
-            case "LAST_TRADING_NOT_EXISTS":
-            case "NOT_TRADING_DAY":
-                createNextRegressionTaskAction.process(context);
-                return;
-        }
+        StockWideDailyDigest currentWideDigest = entity.getCurrentWideDigest();
 
-        entity.setSuccess(false);
+        stockDailyDigestRepository.save(currentWideDigest);
     }
 }

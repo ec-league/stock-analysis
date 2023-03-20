@@ -10,7 +10,7 @@
         <result column="GMT_MODIFIED" jdbcType="TIMESTAMP" property="gmtModified"/>
     </resultMap>
     <sql id="Base_Column_List">
-        ID, CODE, `NAME`, PARTITION_DATE, EXT_INFO,
+        ID, CODE, PARTITION_DATE, EXT_INFO,
     GMT_CREATE, GMT_MODIFIED
     </sql>
     <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">

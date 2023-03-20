@@ -60,4 +60,20 @@ public class StockDailyDigestRepository {
 
         return DomainConverter.toDomain(stockWideDailyDigestDO);
     }
+
+    public void save(StockWideDailyDigest currentWideDigest) {
+        StockWideDailyDigestDO dbEntity = DbConverter.toDbEntity(currentWideDigest);
+
+
+        StockWideDailyDigestDO stockWideDailyDigestDO =
+                stockWideDailyDigestDao.selectByCodeAndPartitionDate(currentWideDigest.getCode(),
+                        currentWideDigest.getPartitionDate());
+
+        if (stockWideDailyDigestDO == null) {
+            stockWideDailyDigestDao.insert(dbEntity);
+        } else {
+            dbEntity.setId(stockWideDailyDigestDO.getId());
+            stockWideDailyDigestDao.updateById(dbEntity);
+        }
+    }
 }

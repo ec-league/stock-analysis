@@ -3,9 +3,8 @@ package com.sapphire.stock.analysis.biz.task.handler;
 import com.sapphire.stock.analysis.biz.entity.WideDigestEntity;
 import com.sapphire.stock.analysis.core.model.Task;
 import com.sapphire.stock.analysis.core.process.ProcessContext;
-import com.sapphire.stock.analysis.core.repo.PartitionDateRepository;
-import com.sapphire.stock.analysis.core.repo.StockDailyDigestRepository;
-import org.apache.commons.lang.StringUtils;
+import com.sapphire.stock.analysis.core.process.ProcessExecutor;
+import com.sapphire.stock.analysis.core.process.cache.ProcessConfigCache;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -18,10 +17,10 @@ import javax.annotation.Resource;
 public class WideDigestTaskHandler extends BaseTaskHandler {
 
     @Resource
-    private StockDailyDigestRepository stockDailyDigestRepository;
+    private ProcessExecutor processExecutor;
 
     @Resource
-    private PartitionDateRepository partitionDateRepository;
+    private ProcessConfigCache processConfigCache;
 
     @Override
     public void handleInternal(Task task) {
@@ -32,22 +31,21 @@ public class WideDigestTaskHandler extends BaseTaskHandler {
         WideDigestEntity entity = new WideDigestEntity();
 
         String partitionDate = task.getExtInfo().get("partitionDate");
+        String code = task.getExtInfo().get("code");
+        entity.setCode(code);
+        entity.setPartitionDate(partitionDate);
 
+        context.setEntity(entity);
 
-        if (StringUtils.isEmpty(partitionDate)) {
-            dealFailure(task, "partition date is null!");
-            return;
-        }
+        context.setProcessConfig(processConfigCache.getProcessConfig(context));
 
-        if (!partitionDateRepository.isTradingDay(partitionDate)) {
+        processExecutor.execute(context);
+
+        if (entity.isSuccess()) {
             dealSuccess(task);
-            return;
+        } else {
+            dealFailure(task, context.getErrorMsg());
         }
-
-        // calculate last trading day
-        String lastPartitionDate = partitionDateRepository.getLastPartitionDate(partitionDate);
-
-
     }
 
     @Override

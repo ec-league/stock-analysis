@@ -1,6 +1,7 @@
 package com.sapphire.stock.analysis.biz.entity;
 
 import com.sapphire.stock.analysis.biz.entity.aware.PartitionDateAware;
+import com.sapphire.stock.analysis.biz.entity.aware.StockCodeAware;
 import com.sapphire.stock.analysis.biz.entity.aware.TaskChainAware;
 import com.sapphire.stock.analysis.common.util.DateUtils;
 import com.sapphire.stock.analysis.core.model.StockDailyDigest;
@@ -15,7 +16,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class WideDigestEntity extends BaseEntity implements PartitionDateAware, TaskChainAware {
+public class WideDigestEntity extends BaseEntity implements PartitionDateAware, TaskChainAware, StockCodeAware {
 
     private String code;
 

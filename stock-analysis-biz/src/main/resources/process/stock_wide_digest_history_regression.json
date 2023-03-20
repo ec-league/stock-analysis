@@ -6,11 +6,13 @@
     },
     "PROCESS": {
       "actions": [
+        "isTradingDayAction",
         "loadStockInfoAction",
         "calculateLastPartitionDateAction",
         "loadLastWideDigestAction",
         "loadDailyDigestAction",
         "calculateCurrentWideDigestAction",
+        "saveCurrentWideDigestAction",
         "createNextRegressionTaskAction"
       ]
     },

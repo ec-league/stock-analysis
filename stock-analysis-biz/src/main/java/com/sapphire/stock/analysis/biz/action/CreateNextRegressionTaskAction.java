@@ -25,7 +25,6 @@ public class CreateNextRegressionTaskAction implements BusinessAction {
     @Override
     public void process(ProcessContext context) {
         TaskChainAware entity = context.getEntity();
-        String code = entity.getCode();
 
         String endDate = entity.getNextDate();
 
@@ -47,7 +46,7 @@ public class CreateNextRegressionTaskAction implements BusinessAction {
         nextTask.setExtInfo(nextTaskExtInfo);
         nextTask.setFireDate(new Date());
         nextTask.setRetryTimes(0);
-        nextTask.setTaskType("STOCK_INFO_REGRESSION");
+        nextTask.setTaskType(entity.getTaskType());
 
         taskRepository.save(nextTask);
     }

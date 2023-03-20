@@ -1,15 +1,14 @@
 package com.sapphire.stock.analysis.core.converter;
 
-import java.util.Date;
-import java.util.Locale;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
-
 import com.alibaba.druid.support.json.JSONUtils;
 import com.sapphire.stock.analysis.common.dal.model.*;
 import com.sapphire.stock.analysis.common.util.JsonUtils;
 import com.sapphire.stock.analysis.core.model.*;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
+
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Author: 柏云鹏
@@ -137,5 +136,17 @@ public class DbConverter {
         asyncTaskDo.setGmtCreate(asyncTask.getGmtCreate());
         asyncTaskDo.setGmtModified(asyncTask.getGmtModified());
         return asyncTaskDo;
+    }
+
+    public static StockWideDailyDigestDO toDbEntity(StockWideDailyDigest currentWideDigest) {
+        StockWideDailyDigestDO dbEntity = new StockWideDailyDigestDO();
+
+        dbEntity.setCode(currentWideDigest.getCode());
+        dbEntity.setPartitionDate(currentWideDigest.getPartitionDate());
+        dbEntity.setExtInfo(JsonUtils.toJsonStr(currentWideDigest.getStockWideDetail()));
+        dbEntity.setGmtCreate(currentWideDigest.getGmtCreate());
+        dbEntity.setGmtModified(new Date());
+
+        return dbEntity;
     }
 }
